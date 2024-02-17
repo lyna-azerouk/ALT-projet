@@ -14,6 +14,7 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         body: JSON.stringify(jsonData)
     })
     .then(response => response.json())
+    .then(console.log(response))
     .then(data => {
         document.getElementById("message").textContent = data.message;
     })
