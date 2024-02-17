@@ -16,7 +16,7 @@ const (
 	host     = "localhost"
 	port     = 5432
 	user     = "" //replace with your user_name
-	password = "52fdc5a882ad0cc490297a43dce208cc36639f0c5224fc47bc849a978bd16d98"
+	password = ""
 	dbname   = "data_base_test"
 )
 

@@ -4,7 +4,7 @@
 DB_HOST="localhost"
 DB_PORT="5432"
 DB_NAME="data_base_test"
-DB_USER="linaazerouk"
+DB_USER="" #replace with ur db user_name
 DB_PASSWORD=""
 
 DROP_TABLE1="DROP TABLE IF EXISTS authentication;"
