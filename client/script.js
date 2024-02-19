@@ -13,8 +13,12 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
         },
         body: JSON.stringify(jsonData)
     })
-    .then(response => response.json())
-    .then(console.log(response))
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         document.getElementById("message").textContent = data.message;
     })

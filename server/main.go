@@ -2,11 +2,11 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 )
 
@@ -29,23 +29,17 @@ type Response struct {
 	Message string `json:"message,omitempty"`
 }
 
-func loginHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
+func loginHandler(c *gin.Context) {
 	var creds Credentials
-	err := json.NewDecoder(r.Body).Decode(&creds)
-	if err != nil {
-		http.Error(w, "Invalid request body", http.StatusBadRequest)
+
+	if err := c.BindJSON(&creds); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
 		return
 	}
 
 	/*
 	 * Connect to database
 	 */
-
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable", host, port, user, password, dbname)
 
 	fmt.Println(Log + "Info BDD : " + psqlInfo)
@@ -57,32 +51,22 @@ func loginHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	db.Close()
 
-	// hash := sha256.Sum256([]byte(creds.Password))
-	// _, err = db.Exec("INSERT into authentication (email,password) VALUES ($1, $2)", creds.Email, hex.EncodeToString(hash[:]))
+	//hash := sha256.Sum256([]byte(creds.Password))
+	//_, err = db.Exec("INSERT into authentication (email,password) VALUES ($1, $2)", creds.Email, hex.EncodeToString(hash[:]))
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		fmt.Println("LOG : BDD Error " + err.Error())
+		c.JSON(http.StatusUnauthorized, gin.H{"status": "unauthorized"})
 		return
 	}
 
-	response := Response{
-		Success: 200,
-		Message: "Successfully  signUp",
-	}
-
-	jsonBytes, _ := json.Marshal(response)
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	w.Write(jsonBytes)
-
-	fmt.Println(Log + "signUp Success")
-
+	c.JSON(http.StatusCreated, gin.H{"status": "Succesfull"})
 }
 
 func main() {
-	http.HandleFunc("/login", loginHandler)
-	http.Handle("/", http.FileServer(http.Dir("./client")))
-	http.ListenAndServe(":8080", nil)
+	router := gin.Default()
+	router.Static("/", "./client")
+
+	router.POST("/login", loginHandler)
+	router.Run(":8080")
+
 }
