@@ -1,0 +1,17 @@
+package models
+
+type Credentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type Restaurant struct {
+	Id      int    `json:"id"`
+	Name    string `json:"name"`
+	Address string `json:"address"`
+}
+
+type Response struct {
+	Success int    `json:"success"`
+	Message string `json:"message,omitempty"`
+}
