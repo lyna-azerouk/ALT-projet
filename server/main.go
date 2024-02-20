@@ -7,10 +7,13 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt"
 	_ "github.com/lib/pq"
 )
 
 const Log = "LOG : "
+
+var secret string = "boufluence"
 
 const (
 	host     = "localhost"
@@ -59,7 +62,12 @@ func loginHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, gin.H{"status": "Succesfull"})
+	token := jwt.New(jwt.SigningMethodHS256)
+	tokenString, err := token.SignedString([]byte(secret))
+	if err != nil {
+		log.Fatal(err)
+	}
+	c.JSON(http.StatusCreated, gin.H{"status": "Succesfull", "token": tokenString})
 }
 
 func main() {
