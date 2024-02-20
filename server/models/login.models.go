@@ -10,6 +10,11 @@ type Restaurant struct {
 	Name    string `json:"name"`
 	Address string `json:"address"`
 }
+type Restaurant_Menu struct {
+	Id    int    `json:"id"`
+	Name  string `json:"name"`
+	Price int
+}
 
 type Response struct {
 	Success int    `json:"success"`
