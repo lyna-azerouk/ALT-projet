@@ -3,16 +3,14 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
+	"net/http"
 	"serveur/server/handlers"
 )
 
 func main() {
 	router := gin.Default()
 	router.GET("/", func(context *gin.Context) {
-		 
-		{
-			"message": "Hello word"
-		}
+		context.JSON(http.StatusOK, "Hello word")
 	})
 	router.GET("/restaurants/:localisation", handlers.Restaurants)
 	// configure routes
