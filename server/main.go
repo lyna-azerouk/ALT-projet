@@ -18,7 +18,7 @@ var secret string = "boufluence"
 const (
 	host     = "localhost"
 	port     = 5432
-	user     = "" //replace with your user_name
+	user     = "lina_azerouk" //replace with your user_name
 	password = ""
 	dbname   = "data_base_test"
 )
@@ -67,6 +67,22 @@ func loginHandler(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Print(tokenString)
+	c.JSON(http.StatusCreated, gin.H{"status": "Succesfull", "token": tokenString})
+}
+
+func login_validation(c *gin.Context) {
+
+	var code = c.Param("code_validation")
+	fmt.Print(code)
+	// verify if the code exist in bdd  and is correct
+
+	token := jwt.New(jwt.SigningMethodHS256)
+	tokenString, err := token.SignedString([]byte(secret))
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Print(tokenString)
 	c.JSON(http.StatusCreated, gin.H{"status": "Succesfull", "token": tokenString})
 }
 
@@ -75,6 +91,7 @@ func main() {
 	router.Static("/", "./client")
 
 	router.POST("/login", loginHandler)
+	router.POST("/login_validation/:code_validation", login_validation)
 	router.Run(":8080")
 
 }
