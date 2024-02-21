@@ -17,6 +17,16 @@ CREATE_TABLE1="CREATE TABLE \"USER\" (
     user_role USER_ROLE NOT NULL
 );"
 
+
+CREATE_TABLE2="CREATE TABLE \"Restaurant\" (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) UNIQUE NOT NULL,
+  password VARCHAR(300) NOT NULL,
+  affluence INT NOT NULL,
+  cuisine_type VARCHAR(300)
+);"
+
+
 # Insert data into the table
 INSERT_DATA="INSERT INTO \"USER\" (email, password, user_role) VALUES
     ('example1@example.com', 'password1', 'CLIENT');"
@@ -24,4 +34,5 @@ INSERT_DATA="INSERT INTO \"USER\" (email, password, user_role) VALUES
 # Connect to CockroachDB and execute SQL commands
 cockroach sql --host="$DB_HOST" --user="$DB_USER" --database="$DB_NAME" -e "$SQL_QUERY_TYPE"
 cockroach sql --host="$DB_HOST" --user="$DB_USER" --database="$DB_NAME" -e "$CREATE_TABLE1"
+cockroach sql --host="$DB_HOST" --user="$DB_USER" --database="$DB_NAME" -e "$CREATE_TABLE2"
 cockroach sql --host="$DB_HOST" --user="$DB_USER" --database="$DB_NAME" -e "$INSERT_DATA"
