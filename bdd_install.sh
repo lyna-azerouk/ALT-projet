@@ -1,26 +1,27 @@
 #!/bin/bash
 
 # Define PostgreSQL connection parameters
-DB_HOST="localhost"
-DB_PORT="5432"
-DB_NAME="data_boufluence"
-DB_USER="" #replace with ur db user_name
-DB_PASSWORD=""
+DB_HOST="bouffluence-4322.g95.gcp-us-west2.cockroachlabs.cloud"
+DB_PORT="26257"
+DB_NAME="bouffluence"
+DB_USER="bouffluence"
+DB_PASSWORD="gTsPKkviQpqV3wl6JYeiOw"
 
-DROP_TABLE1="DROP TABLE IF EXISTS authentication;"
 
-# Define SQL commands to create tables
-CREATE_TABLE1="CREATE TABLE authentication (
+SQL_QUERY_TYPE="CREATE TYPE USER_ROLE AS ENUM ('CLIENT', 'RESTAURANT', 'ADMIN');"
+
+CREATE_TABLE1="CREATE TABLE \"USER\" (
+    id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
-    password VARCHAR(300) NOT NULL
+    password VARCHAR(300) NOT NULL,
+    user_role USER_ROLE NOT NULL
 );"
 
-# insert into bdd
-INSERT_DATA="INSERT INTO authentication (email, password) VALUES
-    ('example1@example.com', 'password1'),
-    ('example2@example.com', 'password2');"
+# Insert data into the table
+INSERT_DATA="INSERT INTO \"USER\" (email, password, user_role) VALUES
+    ('example1@example.com', 'password1', 'CLIENT');"
 
-# Connect to PostgreSQL and execute SQL commands
-psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "$DROP_TABLE1"
-psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "$CREATE_TABLE1"
-psql -h $DB_HOST -p $DB_PORT -U $DB_USER -d $DB_NAME -c "$INSERT_DATA"
+# Connect to CockroachDB and execute SQL commands
+cockroach sql --host="$DB_HOST" --user="$DB_USER" --database="$DB_NAME" -e "$SQL_QUERY_TYPE"
+cockroach sql --host="$DB_HOST" --user="$DB_USER" --database="$DB_NAME" -e "$CREATE_TABLE1"
+cockroach sql --host="$DB_HOST" --user="$DB_USER" --database="$DB_NAME" -e "$INSERT_DATA"
