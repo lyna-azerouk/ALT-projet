@@ -1,5 +1,7 @@
 package models
 
+import "github.com/golang-jwt/jwt"
+
 type Credentials struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
@@ -19,4 +21,9 @@ type Restaurant_Menu struct {
 type Response struct {
 	Success int    `json:"success"`
 	Message string `json:"message,omitempty"`
+}
+
+type UserClaims struct {
+	Email string `json:"email"`
+	jwt.StandardClaims
 }

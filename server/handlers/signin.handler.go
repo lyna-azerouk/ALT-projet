@@ -4,12 +4,14 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"github.com/golang-jwt/jwt"
 	"log"
 	"net/http"
 	"serveur/server/models"
+	services "serveur/server/services/jwt"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
 
 func LoginHandler(c *gin.Context) {
@@ -36,17 +38,19 @@ func LoginHandler(c *gin.Context) {
 
 	fmt.Println(rows)
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
 	}
 
-	// Create token
-	token := jwt.New(jwt.SigningMethodHS256)
-	tokenString, err := token.SignedString([]byte(secret)) /// il doit dependre d'un user
-	if err != nil {
-		log.Fatal(err)
+	// user auth is success, create a new token valid for 30 min
+	userClaims := models.UserClaims{
+		Email: creds.Email,
+		StandardClaims: jwt.StandardClaims{
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Minute * 30).Unix(),
+		},
 	}
 
-	c.JSON(http.StatusOK, gin.H{"message": "Logged in", "token": tokenString})
+	signedAccessToken, err := services.NewAccessToken(userClaims)
+	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
 }
