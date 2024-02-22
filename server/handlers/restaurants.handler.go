@@ -1,7 +1,10 @@
 package handlers
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
+	"net/url"
 	"serveur/server/models"
 
 	"github.com/gin-gonic/gin"
@@ -14,13 +17,27 @@ var restaurants = []models.Restaurant{
 
 // mette en plca une structure address
 func Restaurants(c *gin.Context) {
-	var localisation = c.Param("localisation")
-	var restaurantsInLocation []models.Restaurant
+	var location = c.Param("localisation")
+	query := fmt.Sprintf(`[out:json];
+	area["name"="%s"] -> .area;
+	node["amenity"="restaurant"](area.area);
+	out;`, location)
+	apiUrl := fmt.Sprintf("https://overpass-api.de/api/interpreter?data=%s", url.QueryEscape(query))
 
-	for _, restaurant := range restaurants {
-		if restaurant.Address == localisation {
-			restaurantsInLocation = append(restaurantsInLocation, restaurant)
-		}
+	response, err := http.Get(apiUrl)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
 	}
-	c.JSON(http.StatusOK, restaurantsInLocation)
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return
+	}
+
+	c.Data(http.StatusOK, "application/json", body)
 }
