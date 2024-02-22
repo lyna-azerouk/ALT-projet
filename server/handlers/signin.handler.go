@@ -40,9 +40,10 @@ func LoginHandler(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
 	}
-	// create token
+
+	// Create token
 	token := jwt.New(jwt.SigningMethodHS256)
-	tokenString, err := token.SignedString([]byte(secret))
+	tokenString, err := token.SignedString([]byte(secret)) /// il doit dependre d'un user
 	if err != nil {
 		log.Fatal(err)
 	}
