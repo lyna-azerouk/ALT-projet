@@ -18,6 +18,7 @@ func main() {
 	router.GET("/restaurants/:localisation", handlers.Restaurants)
 	router.GET("/restaurant/:id", handlers.Restaurant_details)
 
+	router.POST("/signup", handlers.RegistrationHandler)
 	router.POST("/login", handlers.LoginHandler)
 	//router.POST("/login_validation/:code_validation", handlers.Login_validation)
 	router.Run(":8080")
