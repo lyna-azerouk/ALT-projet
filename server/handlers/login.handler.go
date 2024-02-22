@@ -14,11 +14,11 @@ import (
 )
 
 const (
-	host     = "bouffluence-4322.g95.gcp-us-west2.cockroachlabs.cloud"
+	host     = "frost-hippo-13790.8nj.gcp-europe-west1.cockroachlabs.cloud"
 	port     = 26257
 	user     = "bouffluence"
-	password = "gTsPKkviQpqV3wl6JYeiOw"
-	dbname   = "bouffluence"
+	password = "NKi9yHEPNbAY-_MrwE8IRw"
+	dbname   = "defaultdb"
 )
 
 var secret string = "boufluence"
@@ -45,7 +45,7 @@ func LoginHandler(c *gin.Context) {
 	}
 
 	hash := sha256.Sum256([]byte(creds.Password))
-	_, err = db.Exec("INSERT into \"USER\" (email, password, user_role) VALUES ($1, $2, $3)", creds.Email, hex.EncodeToString(hash[:]), "CLIENT")
+	_, err = db.Exec("INSERT into BL_USER (email, password, user_role) VALUES ($1, $2, $3)", creds.Email, hex.EncodeToString(hash[:]), "CLIENT")
 
 	if err != nil {
 		fmt.Println(err)
