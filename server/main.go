@@ -2,11 +2,12 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	_ "github.com/lib/pq"
 	"net/http"
 	"os"
 	"serveur/server/handlers"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 )
 
 func main() {
@@ -18,7 +19,7 @@ func main() {
 
 	// configure routes
 	router.GET("/restaurants/:localisation", handlers.Restaurants)
-	router.GET("/restaurant/:id", handlers.Restaurant_details)
+	router.GET("/restaurant/:restaurant_id", handlers.Restaurant_details)
 
 	router.POST("/signup", handlers.RegistrationHandler)
 	router.POST("/login", handlers.LoginHandler)

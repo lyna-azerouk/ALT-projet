@@ -2,23 +2,35 @@ package handlers
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
-	"serveur/server/models"
+	"net/url"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-var menus = []models.Restaurant_Menu{
-	{Id: 1, Name: "Menu A", Price: 15},
-	{Id: 2, Name: "Menu B", Price: 20},
-	{Id: 2, Name: "Menu B", Price: 20},
-}
-
 func Restaurant_details(c *gin.Context) {
-	var id_restaurant = c.Param("id")
-	fmt.Print(id_restaurant)
-	//Get the menus of the restaurant from the databsae
-	// si le id n'existe pas en bdd renvoie uen erreur.
+	var restaurant_id = c.Param("restaurant_id")
+	restaurantID, err := strconv.Atoi(restaurant_id)
 
-	c.JSON(http.StatusOK, menus)
+	query := fmt.Sprintf("[out:json];node(%d);out;", restaurantID)
+	apiUrl := "https://overpass-api.de/api/interpreter?data=" + url.QueryEscape(query)
+
+	response, err := http.Get(apiUrl)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	defer response.Body.Close()
+
+	body, err := ioutil.ReadAll(response.Body)
+
+	if err != nil {
+		fmt.Println("Error reading response:", err)
+		return
+	}
+
+	//Insert into bdd?
+	c.Data(http.StatusOK, "application/json", body)
 }
