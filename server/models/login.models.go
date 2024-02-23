@@ -2,8 +2,13 @@ package models
 
 import "github.com/golang-jwt/jwt"
 
-type Credentials struct {
+type ClientCredentials struct {
 	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type RestaurantCredentials struct {
+	Id       int    `json:"id"`
 	Password string `json:"password"`
 }
 
@@ -23,7 +28,13 @@ type Response struct {
 	Message string `json:"message,omitempty"`
 }
 
-type UserClaims struct {
+type ClientClaims struct {
 	Email string `json:"email"`
+	Role  string `json:"role"`
+	jwt.StandardClaims
+}
+
+type RestaurantClaims struct {
+	Id int `json:"id"`
 	jwt.StandardClaims
 }

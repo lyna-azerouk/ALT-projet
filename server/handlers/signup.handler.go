@@ -15,7 +15,7 @@ import (
 var secret string = "boufluence"
 
 func RegistrationHandler(c *gin.Context) {
-	var creds models.Credentials
+	var creds models.ClientCredentials
 
 	if err := c.BindJSON(&creds); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
@@ -28,7 +28,6 @@ func RegistrationHandler(c *gin.Context) {
 	db, err := ConnectDB()
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed to connect to database"})
 		return
 	}
@@ -37,7 +36,6 @@ func RegistrationHandler(c *gin.Context) {
 	_, err = db.Exec("INSERT into BL_USER (email, password, user_role) VALUES ($1, $2, $3)", creds.Email, hex.EncodeToString(hash[:]), "CLIENT")
 
 	if err != nil {
-		fmt.Println(err)
 		c.JSON(http.StatusConflict, gin.H{"status": "user already exist in data base"})
 		return
 	}

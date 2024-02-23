@@ -7,12 +7,13 @@ import (
 	"net/http"
 	"os"
 	"serveur/server/handlers"
+	"serveur/server/middlewares"
 )
 
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-	router.GET("/", handlers.AuthMiddleware, func(context *gin.Context) {
+	router.GET("/", middlewares.AuthMiddleware, func(context *gin.Context) {
 		context.JSON(http.StatusOK, "Hello word")
 	})
 
@@ -21,8 +22,8 @@ func main() {
 	router.GET("/restaurant/:id", handlers.Restaurant_details)
 
 	router.POST("/signup", handlers.RegistrationHandler)
-	router.POST("/login", handlers.LoginHandler)
-	//router.POST("/login_validation/:code_validation", handlers.Login_validation)
+	router.POST("/auth/client", handlers.ClientLoginHandler)
+	router.POST("/auth/restaurant", handlers.RestaurantLoginHandler)
 	router.Run(":8080")
 
 	secret := os.Getenv("TOKEN_SECRET")
