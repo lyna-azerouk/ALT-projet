@@ -35,7 +35,6 @@ func Restaurants(c *gin.Context) {
 		return
 	}
 
-	//Insert into bdd?
 	c.Data(http.StatusOK, "application/json", body)
 
 }
