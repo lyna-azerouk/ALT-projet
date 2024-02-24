@@ -18,7 +18,7 @@ func main() {
 	})
 
 	// configure routes
-	router.GET("/restaurants/:localisation", handlers.Restaurants)
+	router.GET("/restaurants/:long/:lal", handlers.Restaurants)
 	router.GET("/restaurant/:restaurant_id", handlers.Restaurant_details)
 
 	router.POST("/signup", handlers.RegistrationHandler)

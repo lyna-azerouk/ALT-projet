@@ -5,18 +5,30 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-// mette en plca une structure address
 func Restaurants(c *gin.Context) {
-	var location = c.Param("localisation")
+	latStr := c.Param("lal")
+	longStr := c.Param("long")
+
+	latitude, err := strconv.ParseFloat(latStr, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid altitude"})
+		return
+	}
+
+	longitude, err := strconv.ParseFloat(longStr, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid longitude"})
+		return
+	}
 
 	query := fmt.Sprintf(`[out:json];
-	area["name"="%s"] -> .area;
-	node["amenity"="restaurant"](area.area);
-	out;`, location)
+        node["amenity"="restaurant"](bbox:%f,%f,%f,%f);
+        out;`, latitude-0.1, longitude-0.1, latitude+0.1, longitude+0.1)
 
 	apiUrl := fmt.Sprintf("https://overpass-api.de/api/interpreter?data=%s", url.QueryEscape(query))
 

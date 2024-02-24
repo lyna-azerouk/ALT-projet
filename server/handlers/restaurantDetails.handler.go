@@ -51,11 +51,8 @@ func Restaurant_details(c *gin.Context) {
 		if err != nil {
 			log.Fatal(err)
 		}
-
 		menus = append(menus, menu)
 	}
-
-	fmt.Println(menus)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
