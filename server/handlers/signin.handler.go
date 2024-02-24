@@ -54,3 +54,28 @@ func LoginHandler(c *gin.Context) {
 	signedAccessToken, err := services.NewAccessToken(userClaims)
 	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
 }
+
+func AuthMiddleware(c *gin.Context) {
+	fmt.Println("utilisation du middleware!!!")
+	token := ExtractToken(c)
+
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "No token provided"})
+		c.Abort()
+		return
+	}
+
+	claims := services.ParseAccessToken(token)
+
+	if claims == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid token"})
+		c.Abort()
+		return
+	}
+
+	c.Next()
+}
+
+func ExtractToken(c *gin.Context) string {
+	return c.Request.Header.Get("Authorization")[7:]
+}

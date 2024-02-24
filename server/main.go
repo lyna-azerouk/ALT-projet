@@ -13,7 +13,7 @@ import (
 func main() {
 	gin.SetMode(gin.ReleaseMode)
 	router := gin.Default()
-	router.GET("/", func(context *gin.Context) {
+	router.GET("/", handlers.AuthMiddleware, func(context *gin.Context) {
 		context.JSON(http.StatusOK, "Hello word")
 	})
 
