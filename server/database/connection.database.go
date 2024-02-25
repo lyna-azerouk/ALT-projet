@@ -1,4 +1,4 @@
-package handlers
+package database
 
 import (
 	"database/sql"
@@ -12,6 +12,7 @@ import (
  * @return *sql.DB
  */
 func ConnectDB() (*sql.DB, error) {
-	psqlInfo := fmt.Sprintf("postgresql://%s:%s@%s:%d/%s?sslmode=require", USER_PROD, PASSWORD_PROD, HOST_PROD, PORT_PROD, DB_NAME_PROD)
+	const format = "postgresql://%s:%s@%s:%d/%s?sslmode=require"
+	psqlInfo := fmt.Sprintf(format, GetUser(), GetPassword(), GetHost(), GetPort(), GetDBName())
 	return sql.Open("postgres", psqlInfo)
 }

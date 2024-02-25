@@ -3,16 +3,13 @@ package handlers
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
-	"log"
 	"net/http"
+	"serveur/server/const/requests"
+	"serveur/server/database"
 	"serveur/server/models"
 
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt"
 )
-
-var secret string = "boufluence"
 
 func RegistrationHandler(c *gin.Context) {
 	var creds models.ClientCredentials
@@ -22,10 +19,7 @@ func RegistrationHandler(c *gin.Context) {
 		return
 	}
 
-	/*
-	 * Connect to database
-	 */
-	db, err := ConnectDB()
+	db, err := database.ConnectDB()
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"status": "failed to connect to database"})
@@ -33,7 +27,8 @@ func RegistrationHandler(c *gin.Context) {
 	}
 
 	hash := sha256.Sum256([]byte(creds.Password))
-	_, err = db.Exec("INSERT into BL_USER (email, password, user_role) VALUES ($1, $2, $3)", creds.Email, hex.EncodeToString(hash[:]), "CLIENT")
+	query := requests.SelectClientByEmailAndPasswordRequestTemplate
+	_, err = db.Exec(query, creds.Email, hex.EncodeToString(hash[:]), "CLIENT")
 
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"status": "user already exist in data base"})
@@ -41,20 +36,5 @@ func RegistrationHandler(c *gin.Context) {
 	}
 	db.Close()
 
-	c.JSON(http.StatusOK, gin.H{"message": "ok signup"})
-}
-
-func Login_validation(c *gin.Context) {
-
-	var code = c.Param("code_validation")
-	fmt.Print(code)
-	// verify if the code exist in bdd  and is correct
-
-	token := jwt.New(jwt.SigningMethodHS256)
-	tokenString, err := token.SignedString([]byte(secret))
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Print(tokenString)
-	c.JSON(http.StatusCreated, gin.H{"token": tokenString})
+	c.JSON(http.StatusOK, gin.H{"message": "user created successfully, you can now login"})
 }

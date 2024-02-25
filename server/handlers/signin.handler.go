@@ -8,6 +8,7 @@ import (
 	"net/http"
 	roles "serveur/server/const"
 	"serveur/server/const/requests"
+	"serveur/server/database"
 	"serveur/server/models"
 	services "serveur/server/services/jwt"
 	"time"
@@ -24,7 +25,7 @@ func ClientLoginHandler(c *gin.Context) {
 		return
 	}
 
-	db, err := ConnectDB()
+	db, err := database.ConnectDB()
 
 	if err != nil {
 		log.Fatal(err)
@@ -56,7 +57,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 		return
 	}
 
-	db, err := ConnectDB()
+	db, err := database.ConnectDB()
 
 	if err != nil {
 		log.Fatal(err)
@@ -74,7 +75,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 	}
 
 	// user auth is success, create a new token valid for 30 min
-	restaurantClaims := buildRestaurantCredential(creds, roles.ClientRole)
+	restaurantClaims := buildRestaurantCredential(creds)
 
 	signedAccessToken, err := services.NewRestaurantAccessToken(restaurantClaims)
 	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
@@ -92,7 +93,7 @@ func buildClientCredential(creds models.ClientCredentials, role string) models.C
 	return userClaims
 }
 
-func buildRestaurantCredential(creds models.RestaurantCredentials, role string) models.RestaurantClaims {
+func buildRestaurantCredential(creds models.RestaurantCredentials) models.RestaurantClaims {
 	restaurantClaims := models.RestaurantClaims{
 		Id: creds.Id,
 		StandardClaims: jwt.StandardClaims{

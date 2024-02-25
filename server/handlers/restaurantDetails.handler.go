@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"serveur/server/database"
 	"serveur/server/models"
 	"strconv"
 
@@ -38,7 +39,7 @@ func Restaurant_details(c *gin.Context) {
 		return
 	}
 
-	db, err := ConnectDB()
+	db, err := database.ConnectDB()
 	if err != nil {
 		log.Fatal(err)
 	}
