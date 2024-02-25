@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Restaurants(c *gin.Context) {
+func RestaurantsHandler(c *gin.Context) {
 	latStr := c.Param("lal")
 	longStr := c.Param("long")
 	radiusAsStr := c.Param("radius")

@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"serveur/server/const/requests"
 	"serveur/server/database"
 	"serveur/server/models"
 	"strconv"
@@ -14,7 +15,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Restaurant_details(c *gin.Context) {
+func RestaurantDetailsHandler(c *gin.Context) {
 	var restaurant_id = c.Param("restaurant_id")
 
 	restaurantID, err := strconv.Atoi(restaurant_id)
@@ -31,7 +32,7 @@ func Restaurant_details(c *gin.Context) {
 	/**
 	Get all ths menus of the restaurent(restaurent_id) from the table Menus
 	**/
-	var menus []models.Restaurant_Menu
+	var menus []models.Menu
 	defer response.Body.Close()
 
 	if err != nil {
@@ -43,10 +44,10 @@ func Restaurant_details(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	rows, err := db.Query("SELECT * FROM menus WHERE restaurant_id = $1", restaurantID)
+	query = requests.SelectMenusByRestaurantIdRequestTemplate
+	rows, err := db.Query(query, restaurantID)
 	for rows.Next() {
-		var menu models.Restaurant_Menu
+		var menu models.Menu
 
 		err := rows.Scan(&menu.Id, &menu.Name, &menu.RestaurantID, &menu.Price, &menu.Description, &menu.Image)
 		if err != nil {
