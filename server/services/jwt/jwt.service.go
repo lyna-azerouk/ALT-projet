@@ -24,5 +24,8 @@ func ParseAccessToken(accessToken string) *models.ClientClaims {
 	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &models.ClientClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte("SECRET"), nil
 	})
+	if !parsedAccessToken.Valid {
+		return nil
+	}
 	return parsedAccessToken.Claims.(*models.ClientClaims)
 }
