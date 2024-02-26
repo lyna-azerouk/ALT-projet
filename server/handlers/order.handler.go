@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
@@ -30,17 +31,21 @@ func InitOrderHandler(c *gin.Context) {
 	query := requests.InsertNewOrderRequestTemplate
 	var orderId string
 
+	/**
+	  Get the price of the commande.
+	*/
+
+	order_price := GetPrice(db, orderRequest.OrderItems)
+
 	err = db.QueryRow(
 		query,
 		orderRequest.ClientId,
-		orderRequest.RestaurantId, 0, "PENDING", time.Now()).Scan(&orderId)
+		orderRequest.RestaurantId, order_price, "PENDING", time.Now()).Scan(&orderId)
 
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"status": err.Error()})
 		return
 	}
-
-	fmt.Println("id: " + (orderId))
 
 	// Utilisation d'un WaitGroup pour attendre la fin de toutes les goroutines
 	var wg sync.WaitGroup
@@ -67,7 +72,6 @@ func InitOrderHandler(c *gin.Context) {
 		close(errChan)
 	}()
 
-	// Récupérez les erreurs des goroutines
 	for err := range errChan {
 		if err != nil {
 			c.JSON(http.StatusConflict, gin.H{"status": err.Error()})
@@ -78,5 +82,20 @@ func InitOrderHandler(c *gin.Context) {
 	db.Close()
 
 	c.JSON(http.StatusOK, gin.H{"body": orderRequest})
+}
 
+func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
+	var order_price float64 = 0
+	var price float64
+	for _, item := range liste {
+		query := requests.SelectMenuByIdTemplate
+
+		err := db.QueryRow(query, item.MenuId).Scan(&price)
+
+		if err != nil {
+			fmt.Print(err)
+		}
+		order_price = price + order_price
+	}
+	return order_price
 }
