@@ -1,20 +1,27 @@
 package test
 
 import (
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	router2 "serveur/server/router"
+	"serveur/server/router"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
-func TestPingRoute(t *testing.T) {
-	router := router2.SetUpRouter()
+func TestUnauthentifiedUserCannotAccessToProtectedRoute(t *testing.T) {
+	router := router.SetUpRouter()
 
 	w := httptest.NewRecorder()
-	req, _ := http.NewRequest("GET", "/ping", nil)
+	req, _ := http.NewRequest("GET", "/authtest", nil)
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, 200, w.Code)
-	assert.Equal(t, "pong", w.Body.String())
+	// 401
+	assert.Equal(t, http.StatusUnauthorized, w.Code)
+}
+
+func TestAuthentifiedUserCanAccessToProtectedRoute(t *testing.T) {
+	// user mock objects
+
+	router := router.SetUpRouter()
 }
