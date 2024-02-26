@@ -3,7 +3,6 @@ package handlers
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"fmt"
 	"log"
 	"net/http"
 	roles "serveur/server/const"
@@ -46,8 +45,6 @@ func ClientLoginHandler(c *gin.Context) {
 			log.Fatal(err)
 		}
 	}
-
-	fmt.Println(role)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})

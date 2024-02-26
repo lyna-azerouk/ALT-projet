@@ -21,6 +21,7 @@ func SetUpRouter() *gin.Engine {
 
 	setUpRestaurantRoutes(router)
 
+	setUpOrderRoutes(router)
 	return router
 }
 
@@ -33,6 +34,10 @@ func setUpAuthRoutes(router *gin.Engine) {
 	router.POST("/signup", handlers.RegistrationHandler)
 	router.POST("/auth/client", handlers.ClientLoginHandler)
 	router.POST("/auth/restaurant", handlers.RestaurantLoginHandler)
+}
+
+func setUpOrderRoutes(router *gin.Engine) {
+	router.POST("/order", handlers.InitOrderHandler)
 }
 
 func main() {
