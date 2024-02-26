@@ -38,6 +38,7 @@ func setUpAuthRoutes(router *gin.Engine) {
 
 func setUpOrderRoutes(router *gin.Engine) {
 	router.POST("/order", handlers.InitOrderHandler)
+	router.PATCH("/order/:orderId", handlers.UpdatOrderHandler)
 }
 
 func main() {

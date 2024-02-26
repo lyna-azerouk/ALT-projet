@@ -8,6 +8,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*
+Create a new order
+*/
 func InitOrderHandler(c *gin.Context) {
 	var orderRequest models.OrderDetailsRequest
 
@@ -23,4 +26,23 @@ func InitOrderHandler(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"body": orderRequest})
+}
+
+/*
+Update status Order
+*/
+
+func UpdatOrderHandler(c *gin.Context) {
+
+	var id_order = c.Param("orderId")
+
+	order := services.UpdateStatusOrder(id_order)
+
+	if order {
+		// get the information of the order
+		// make a get request ot get all the details of a restaurent from its id
+		c.JSON(http.StatusOK, gin.H{"message": "Order in progress"})
+	} else {
+		c.JSON(400, gin.H{"message": "Order not in progress"})
+	}
 }

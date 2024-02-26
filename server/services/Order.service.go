@@ -74,6 +74,7 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
 	var order_price float64 = 0
 	var price float64
+
 	for _, item := range liste {
 		query := requests.SelectMenuByIdTemplate
 
@@ -85,4 +86,25 @@ func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
 		order_price = price + order_price
 	}
 	return order_price
+}
+
+func UpdateStatusOrder(id_order string) bool {
+	db, err := database.ConnectDB()
+	if err != nil {
+		return false
+	}
+
+	var order models.OrderDetailsRequest
+
+	query := requests.UpdateStatusOrderRequestTemplate
+	row, _ := db.Exec(query, id_order)
+	fmt.Print(row)
+
+	err = db.QueryRow("SELECT client_id, restaurant_id FROM order_details WHERE id = $1", id_order).Scan(&order.ClientId, &order.RestaurantId)
+
+	if err != nil {
+		return false
+	}
+
+	return true
 }
