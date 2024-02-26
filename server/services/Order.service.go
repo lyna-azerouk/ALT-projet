@@ -1,6 +1,7 @@
 package services
 
 import (
+	"database/sql"
 	"fmt"
 	"log"
 	"serveur/server/const/requests"
@@ -16,6 +17,11 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 	if err != nil {
 		log.Fatal(err)
 	}
+	/**
+	Get the price of the order
+	*/
+	price := GetPrice(db, orderRequest.OrderItems)
+
 	// 1st step: insert order in the database
 	query := requests.InsertNewOrderRequestTemplate
 	var orderId string
@@ -23,13 +29,11 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 	err = db.QueryRow(
 		query,
 		orderRequest.ClientId,
-		orderRequest.RestaurantId, 0, "PENDING", time.Now()).Scan(&orderId)
+		orderRequest.RestaurantId, price, "PENDING", time.Now()).Scan(&orderId)
 
 	if err != nil {
 		return err
 	}
-
-	fmt.Println("id: " + (orderId))
 
 	// Utilisation d'un WaitGroup pour attendre la fin de toutes les goroutines
 	var wg sync.WaitGroup
@@ -65,4 +69,20 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 
 	db.Close()
 	return nil
+}
+
+func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
+	var order_price float64 = 0
+	var price float64
+	for _, item := range liste {
+		query := requests.SelectMenuByIdTemplate
+
+		err := db.QueryRow(query, item.MenuId).Scan(&price)
+
+		if err != nil {
+			fmt.Print(err)
+		}
+		order_price = price + order_price
+	}
+	return order_price
 }
