@@ -7,6 +7,7 @@ import (
 	"serveur/server/const/requests"
 	"serveur/server/database"
 	"serveur/server/models"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -41,15 +42,39 @@ func InitOrderHandler(c *gin.Context) {
 
 	fmt.Println("id: " + (orderId))
 
-	//// 2nd step: insert order details in the database
-	query = requests.InsertNewOrderItemRequestTemplate
+	// Utilisation d'un WaitGroup pour attendre la fin de toutes les goroutines
+	var wg sync.WaitGroup
+	errChan := make(chan error, len(orderRequest.OrderItems))
+
+	// Boucle pour chaque item dans orderRequest.OrderItems
 	for _, item := range orderRequest.OrderItems {
-		_, err = db.Exec(query, orderId, item.MenuId, item.Count)
+		wg.Add(1)
+		go func(item models.OrderItem) {
+			defer wg.Done()
+
+			query := requests.InsertNewOrderItemRequestTemplate
+			_, err := db.Exec(query, orderId, item.MenuId, item.Count)
+			if err != nil {
+				errChan <- err
+				return
+			}
+		}(item)
+	}
+
+	// Attendez que toutes les goroutines se terminent
+	go func() {
+		wg.Wait()
+		close(errChan)
+	}()
+
+	// Récupérez les erreurs des goroutines
+	for err := range errChan {
 		if err != nil {
-			c.JSON(http.StatusConflict, gin.H{"status": err})
+			c.JSON(http.StatusConflict, gin.H{"status": err.Error()})
 			return
 		}
 	}
+
 	db.Close()
 
 	c.JSON(http.StatusOK, gin.H{"body": orderRequest})
