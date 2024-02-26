@@ -45,33 +45,33 @@ func RestaurantsAround(lon float64, lat float64, radius float64) []models.OverPa
 	return overPassResponse.Elements
 }
 
-func RestaurantDetails(restaurantID int) models.OverPassRestaurant {
+func GetRestaurantDetails(restaurantID int) models.BouffluenceRestaurant {
 	query := fmt.Sprintf("[out:json];node(%d);out;", restaurantID)
 	endpoint := fmt.Sprintf(URL_TEMPLATE, url.QueryEscape(query))
 	response, err := http.Get(endpoint)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return models.OverPassRestaurant{}
+		return models.BouffluenceRestaurant{}
 	}
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return models.OverPassRestaurant{}
+		return models.BouffluenceRestaurant{}
 	}
 	var overPassResponse models.OverPassResponse
 	err = json.Unmarshal(body, &overPassResponse)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return models.OverPassRestaurant{}
+		return models.BouffluenceRestaurant{}
 	}
 	// retrieve menu
-	var menus []models.Menu = GetMenusByRestaurantId(restaurantID)
+	var menus = GetMenusByRestaurantId(restaurantID)
 	restaurant := models.BouffluenceRestaurant{
 		RestaurantDetails: overPassResponse.Elements[0],
 		Menu:              menus,
 	}
-	return restaurant.RestaurantDetails
+	return restaurant
 
 }
 

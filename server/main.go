@@ -26,7 +26,7 @@ func SetUpRouter() *gin.Engine {
 
 func setUpRestaurantRoutes(router *gin.Engine) {
 	router.GET("/restaurants/:long/:lal/:radius", handlers.RestaurantsHandler)
-	router.GET("/restaurant/:restaurant_id", handlers.RestaurantDetailsHandler)
+	router.GET("/restaurant/:restaurantId", handlers.RestaurantDetailsHandler)
 }
 
 func setUpAuthRoutes(router *gin.Engine) {
