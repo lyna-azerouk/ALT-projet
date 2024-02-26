@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"net/http"
 	roles "serveur/server/const"
@@ -34,9 +35,21 @@ func ClientLoginHandler(c *gin.Context) {
 
 	hash := sha256.Sum256([]byte(creds.Password))
 
-	_, err = db.Query(
+	row, err := db.Query(
 		requests.SelectClientByEmailAndPasswordRequestTemplate,
 		creds.Email, hex.EncodeToString(hash[:]))
+
+	// get role
+	var role string
+	if row.Next() {
+		colums, err := row.Columns()
+		if err != nil {
+			log.Fatal(err)
+		}
+		role = string(colums[2])
+	}
+
+	fmt.Println(role)
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
@@ -44,10 +57,20 @@ func ClientLoginHandler(c *gin.Context) {
 	}
 
 	// user auth is success, create a new token valid for 30 min
-	clientClaims := buildClientCredential(creds, roles.ClientRole)
+	clientClaims := buildClientCredential(creds, actualRole(role))
 
 	signedAccessToken, err := services.NewClientAccessToken(clientClaims)
 	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
+}
+
+func actualRole(role string) string {
+	println("role: " + role)
+	if role == "CLIENT" {
+		return roles.ClientRole
+	} else {
+		return roles.AdminRole
+	}
+
 }
 
 func RestaurantLoginHandler(c *gin.Context) {
