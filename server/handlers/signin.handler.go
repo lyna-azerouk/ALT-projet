@@ -39,14 +39,12 @@ func ClientLoginHandler(c *gin.Context) {
 		requests.SelectClientByEmailAndPasswordRequestTemplate,
 		creds.Email, hex.EncodeToString(hash[:]))
 
-	// get role
-	var role string
+	var email, password, role string
+
 	if row.Next() {
-		colums, err := row.Columns()
-		if err != nil {
+		if err := row.Scan(&email, &password, &role); err != nil {
 			log.Fatal(err)
 		}
-		role = string(colums[2])
 	}
 
 	fmt.Println(role)
