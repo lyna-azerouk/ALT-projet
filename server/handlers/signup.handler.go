@@ -27,7 +27,7 @@ func RegistrationHandler(c *gin.Context) {
 	}
 
 	hash := sha256.Sum256([]byte(creds.Password))
-	query := requests.SelectClientByEmailAndPasswordRequestTemplate
+	query := requests.InsertNewClientRequestTemplate
 	_, err = db.Exec(query, creds.Email, hex.EncodeToString(hash[:]), "CLIENT")
 
 	if err != nil {

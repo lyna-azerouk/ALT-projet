@@ -3,7 +3,6 @@ package handlers
 import (
 	"crypto/sha256"
 	"encoding/hex"
-	"github.com/golang-jwt/jwt"
 	"log"
 	"net/http"
 	roles "serveur/server/const"
@@ -12,6 +11,8 @@ import (
 	"serveur/server/models"
 	services "serveur/server/services/jwt"
 	"time"
+
+	"github.com/golang-jwt/jwt"
 
 	"github.com/gin-gonic/gin"
 )
