@@ -38,6 +38,7 @@ func setUpAuthRoutes(router *gin.Engine) {
 
 func setUpOrderRoutes(router *gin.Engine) {
 	router.POST("/order", handlers.InitOrderHandler)
+	router.GET("/order/:orderId", handlers.GetOrderHandler)
 	router.PATCH("/order/:orderId", handlers.UpdatOrderHandler)
 }
 
@@ -48,5 +49,4 @@ func main() {
 		log.Fatal("Error while starting the server: " + err.Error())
 		return
 	}
-
 }
