@@ -11,6 +11,9 @@ import (
 	"time"
 )
 
+/*
+* Function that creates a new order
+ */
 func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 	db, err := database.ConnectDB()
 
@@ -71,6 +74,57 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 	return nil
 }
 
+/*
+*Get all the details of an order
+ */
+func GetOrderDetails(id_order string) models.OrderDetailsRequest {
+	db, _ := database.ConnectDB()
+	var order models.OrderDetailsRequest
+	var id string
+
+	query_order := requests.GetOrderRequestTemplate
+	db.QueryRow(query_order, id_order).Scan(&id, &order.RestaurantId, &order.ClientId, &order.Price, &order.Date, &order.Status)
+
+	query_items := requests.GetOrderItemsRequestTemplate
+	rows_order_items, _ := db.Query(query_items, id_order)
+
+	for rows_order_items.Next() {
+		var order_item models.OrderItem
+
+		rows_order_items.Scan(&order_item.MenuId, order_item.Count)
+
+		order.OrderItems = append(order.OrderItems, order_item)
+	}
+	return order
+}
+
+/*
+*
+Update the status of the order from Pending to In-Progress
+To Do:  make the function more genreral bu updateing to all the othe  sattes
+*/
+func UpdateStatusOrder(id_order string) bool {
+	db, err := database.ConnectDB()
+	if err != nil {
+		return false
+	}
+	var order models.OrderDetailsRequest
+
+	query := requests.UpdateStatusOrderRequestTemplate
+	row, _ := db.Exec(query, id_order)
+	fmt.Print(row)
+
+	err = db.QueryRow("SELECT client_id, restaurant_id FROM order_details WHERE id = $1", id_order).Scan(&order.ClientId, &order.RestaurantId)
+
+	if err != nil {
+		return false
+	}
+	return true
+}
+
+/*
+* Function that get the Price of an order:  sum(price of each menu)
+ */
 func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
 	var order_price float64 = 0
 	var price float64
@@ -86,25 +140,4 @@ func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
 		order_price = price + order_price
 	}
 	return order_price
-}
-
-func UpdateStatusOrder(id_order string) bool {
-	db, err := database.ConnectDB()
-	if err != nil {
-		return false
-	}
-
-	var order models.OrderDetailsRequest
-
-	query := requests.UpdateStatusOrderRequestTemplate
-	row, _ := db.Exec(query, id_order)
-	fmt.Print(row)
-
-	err = db.QueryRow("SELECT client_id, restaurant_id FROM order_details WHERE id = $1", id_order).Scan(&order.ClientId, &order.RestaurantId)
-
-	if err != nil {
-		return false
-	}
-
-	return true
 }

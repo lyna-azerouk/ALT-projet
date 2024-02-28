@@ -10,7 +10,7 @@ import (
 func GetOrderHandler(c *gin.Context) {
 	var id_order = c.Param("orderId")
 
-	order := services.GetOrder(id_order)
+	order := services.GetOrderDetails(id_order)
 
 	c.JSON(http.StatusOK, gin.H{"order": order})
 }

@@ -9,4 +9,6 @@ const (
 	InsertNewOrderItemRequestTemplate              = ("INSERT into order_items (order_id, menus_id, item_count) VALUES ($1, $2, $3)")
 	SelectMenuByIdTemplate                         = "SELECT price FROM Menus where id= $1"
 	UpdateStatusOrderRequestTemplate               = "UPDATE order_details SET order_status = 'IN_PROGRESS' WHERE id = $1;"
+	GetOrderRequestTemplate                        = "Select * from order_details where id = $1"
+	GetOrderItemsRequestTemplate                   = "Select menus_id, item_count FROM order_items where order_id =$1"
 )
