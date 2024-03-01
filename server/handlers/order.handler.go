@@ -29,20 +29,34 @@ func InitOrderHandler(c *gin.Context) {
 }
 
 /*
-Update status Order
+Update status Order to IN_PROGRESS
 */
-
-func UpdatOrderHandler(c *gin.Context) {
-
+func UpdatpendingOrderHandler(c *gin.Context) {
 	var id_order = c.Param("orderId")
 
-	order := services.UpdateStatusOrder(id_order)
+	order := services.UpdateStatusOrder(id_order, "IN_PROGRESS")
 
-	if order {
-		// get the information of the order
-		// make a get request ot get all the details of a restaurent from its id
-		c.JSON(http.StatusOK, gin.H{"message": "Order in progress"})
-	} else {
-		c.JSON(400, gin.H{"message": "Order not in progress"})
-	}
+	c.JSON(http.StatusOK, gin.H{"message": "Order in progress", "order": order})
+}
+
+/*
+Update status Order to DECLINED and delte the  order from database
+*/
+func UpdatDeleteOrderHandler(c *gin.Context) {
+	var id_order = c.Param("orderId")
+
+	order := services.UpdateStatusOrder(id_order, "DECLINED")
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order Deleted", "order": order})
+}
+
+/*
+Update status Order to COMPLETED
+*/
+func UpdatCompletedOrderHandler(c *gin.Context) {
+	var id_order = c.Param("orderId")
+
+	order := services.UpdateStatusOrder(id_order, "COMPLETED")
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order  Completed", "order": order})
 }

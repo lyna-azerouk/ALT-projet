@@ -3,6 +3,7 @@ package handlers
 import (
 	"crypto/sha256"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"net/http"
 	roles "serveur/server/const"
@@ -72,6 +73,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 	var creds models.RestaurantCredentials
 
 	if err := c.BindJSON(&creds); err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
 		return
 	}
@@ -106,7 +108,7 @@ func buildClientCredential(creds models.ClientCredentials, role string) models.C
 		Role:  role,
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 		},
 	}
 	return userClaims

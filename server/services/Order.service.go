@@ -101,25 +101,31 @@ func GetOrderDetails(id_order string) models.OrderDetailsRequest {
 /*
 *
 Update the status of the order from Pending to In-Progress
-To Do:  make the function more genreral bu updateing to all the othe  sattes
 */
-func UpdateStatusOrder(id_order string) bool {
-	db, err := database.ConnectDB()
-	if err != nil {
-		return false
-	}
+func UpdateStatusOrder(id_order string, status string) models.OrderDetailsRequest {
+	db, _ := database.ConnectDB()
+
 	var order models.OrderDetailsRequest
 
 	query := requests.UpdateStatusOrderRequestTemplate
-	row, _ := db.Exec(query, id_order)
-	fmt.Print(row)
-
-	err = db.QueryRow("SELECT client_id, restaurant_id FROM order_details WHERE id = $1", id_order).Scan(&order.ClientId, &order.RestaurantId)
+	_, err := db.Exec(query, status, id_order)
 
 	if err != nil {
-		return false
+		fmt.Println(err)
 	}
-	return true
+
+	if status == "DECLINED" {
+		delete_query1 := requests.DeleteOrderItemsRequestTemplate
+		delete_query2 := requests.DeleteOrderDetailsRequestTemplate
+		_, err = db.Exec(delete_query1, id_order)
+		_, err = db.Exec(delete_query2, id_order)
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	order = GetOrderDetails(id_order)
+
+	return order
 }
 
 /*
