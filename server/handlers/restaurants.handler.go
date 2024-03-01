@@ -1,52 +1,48 @@
 package handlers
 
 import (
-	"fmt"
-	"io/ioutil"
 	"net/http"
-	"net/url"
+	"serveur/server/services"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
-func Restaurants(c *gin.Context) {
+func RestaurantsHandler(c *gin.Context) {
+	radius, latitude, longitude, notDone := parseCoordinates(c)
+	if notDone {
+		return
+	}
+
+	restaurants := services.RestaurantsAround(longitude, latitude, radius)
+
+	c.JSON(http.StatusOK, gin.H{"restaurants": restaurants})
+}
+
+func parseCoordinates(c *gin.Context) (float64, float64, float64, bool) {
 	latStr := c.Param("lal")
 	longStr := c.Param("long")
+	radiusAsStr := c.Param("radius")
+	if radiusAsStr == "" {
+		radiusAsStr = "1000"
+	}
 
+	radius, err := strconv.ParseFloat(radiusAsStr, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid radius"})
+		return 0, 0, 0, true
+	}
 	latitude, err := strconv.ParseFloat(latStr, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid altitude"})
-		return
+		return 0, 0, 0, true
 	}
 
 	longitude, err := strconv.ParseFloat(longStr, 64)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid longitude"})
-		return
+		return 0, 0, 0, true
+
 	}
-
-	query := fmt.Sprintf(`[out:json];
-        node["amenity"="restaurant"](bbox:%f,%f,%f,%f);
-        out;`, latitude-0.1, longitude-0.1, latitude+0.1, longitude+0.1)
-
-	apiUrl := fmt.Sprintf("https://overpass-api.de/api/interpreter?data=%s", url.QueryEscape(query))
-
-	response, err := http.Get(apiUrl)
-
-	if err != nil {
-		fmt.Println("Error:", err)
-		return
-	}
-	defer response.Body.Close()
-
-	body, err := ioutil.ReadAll(response.Body)
-
-	if err != nil {
-		fmt.Println("Error reading response:", err)
-		return
-	}
-
-	c.Data(http.StatusOK, "application/json", body)
-
+	return radius, latitude, longitude, false
 }

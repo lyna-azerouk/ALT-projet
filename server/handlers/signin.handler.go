@@ -4,78 +4,123 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"github.com/golang-jwt/jwt"
 	"log"
 	"net/http"
+	roles "serveur/server/const"
+	"serveur/server/const/requests"
+	"serveur/server/database"
 	"serveur/server/models"
 	services "serveur/server/services/jwt"
 	"time"
 
+	"github.com/golang-jwt/jwt"
+
 	"github.com/gin-gonic/gin"
 )
 
-func LoginHandler(c *gin.Context) {
+func ClientLoginHandler(c *gin.Context) {
 
-	var creds models.Credentials
+	var creds models.ClientCredentials
 
 	if err := c.BindJSON(&creds); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
 		return
 	}
 
-	db, err := ConnectDB()
+	db, err := database.ConnectDB()
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Println(db)
-
 	hash := sha256.Sum256([]byte(creds.Password))
-	fmt.Println(hex.EncodeToString(hash[:]))
-	// user role is an enum in the type USER_ROLE
-	rows, err := db.Query("SELECT * FROM BL_USER WHERE email = $1 AND password = $2", creds.Email, hex.EncodeToString(hash[:]))
 
-	fmt.Println(rows)
+	row, err := db.Query(
+		requests.SelectClientByEmailAndPasswordRequestTemplate,
+		creds.Email, hex.EncodeToString(hash[:]))
+
+	var email, password, role string
+
+	if row.Next() {
+		if err := row.Scan(&email, &password, &role); err != nil {
+			log.Fatal(err)
+		}
+	}
+
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
 	}
 
 	// user auth is success, create a new token valid for 30 min
-	userClaims := models.UserClaims{
-		Email: creds.Email,
-		StandardClaims: jwt.StandardClaims{
-			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute * 30).Unix(),
-		},
-	}
+	clientClaims := buildClientCredential(creds, actualRole(role))
 
-	signedAccessToken, err := services.NewAccessToken(userClaims)
+	signedAccessToken, err := services.NewClientAccessToken(clientClaims)
 	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
 }
 
-func AuthMiddleware(c *gin.Context) {
-	fmt.Println("utilisation du middleware!!!")
-	token := ExtractToken(c)
-
-	if token == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "No token provided"})
-		c.Abort()
-		return
+func actualRole(role string) string {
+	println("role: " + role)
+	if role == "CLIENT" {
+		return roles.ClientRole
+	} else {
+		return roles.AdminRole
 	}
 
-	claims := services.ParseAccessToken(token)
-
-	if claims == nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid token"})
-		c.Abort()
-		return
-	}
-
-	c.Next()
 }
 
-func ExtractToken(c *gin.Context) string {
-	return c.Request.Header.Get("Authorization")[7:]
+func RestaurantLoginHandler(c *gin.Context) {
+	var creds models.RestaurantCredentials
+
+	if err := c.BindJSON(&creds); err != nil {
+		fmt.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
+		return
+	}
+
+	db, err := database.ConnectDB()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	hash := sha256.Sum256([]byte(creds.Password))
+
+	_, err = db.Query(
+		requests.SelectRestaurantByIdAndPasswordRequestTemplate,
+		creds.Id, hex.EncodeToString(hash[:]))
+
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
+		return
+	}
+
+	// user auth is success, create a new token valid for 30 min
+	restaurantClaims := buildRestaurantCredential(creds)
+
+	signedAccessToken, err := services.NewRestaurantAccessToken(restaurantClaims)
+	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
+}
+
+func buildClientCredential(creds models.ClientCredentials, role string) models.ClientClaims {
+	userClaims := models.ClientClaims{
+		Email: creds.Email,
+		Role:  role,
+		StandardClaims: jwt.StandardClaims{
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+		},
+	}
+	return userClaims
+}
+
+func buildRestaurantCredential(creds models.RestaurantCredentials) models.RestaurantClaims {
+	restaurantClaims := models.RestaurantClaims{
+		Id: creds.Id,
+		StandardClaims: jwt.StandardClaims{
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+		},
+	}
+	return restaurantClaims
 }

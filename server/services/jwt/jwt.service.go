@@ -2,22 +2,40 @@ package services
 
 import (
 	"serveur/server/models"
-)
 
-import (
 	"github.com/golang-jwt/jwt"
+
 	_ "github.com/golang-jwt/jwt"
+
 	_ "os"
 )
 
-func NewAccessToken(claims models.UserClaims) (string, error) {
+func NewClientAccessToken(claims models.ClientClaims) (string, error) {
 	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return accessToken.SignedString([]byte("SECRET"))
 }
 
-func ParseAccessToken(accessToken string) *models.UserClaims {
-	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &models.UserClaims{}, func(token *jwt.Token) (interface{}, error) {
+func NewRestaurantAccessToken(claims models.RestaurantClaims) (string, error) {
+	accessToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return accessToken.SignedString([]byte("SECRET"))
+}
+
+func ParseAccessToken(accessToken string) *models.ClientClaims {
+	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &models.ClientClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte("SECRET"), nil
 	})
-	return parsedAccessToken.Claims.(*models.UserClaims)
+	if !parsedAccessToken.Valid {
+		return nil
+	}
+	return parsedAccessToken.Claims.(*models.ClientClaims)
+}
+
+func ParseAccessTokenResraurent(accessToken string) *models.RestaurantClaims {
+	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &models.RestaurantClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("SECRET"), nil
+	})
+	if !parsedAccessToken.Valid {
+		return nil
+	}
+	return parsedAccessToken.Claims.(*models.RestaurantClaims)
 }
