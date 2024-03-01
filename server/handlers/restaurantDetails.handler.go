@@ -15,9 +15,7 @@ func RestaurantDetailsHandler(c *gin.Context) {
 		c.JSON(400, gin.H{"message": "Invalid restaurant id"})
 		return
 	}
-
 	restaurantDetails := services.GetRestaurantDetails(restaurantID)
 
 	c.JSON(200, gin.H{"restaurant": restaurantDetails})
-
 }

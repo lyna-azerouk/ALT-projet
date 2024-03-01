@@ -21,6 +21,7 @@ func SetUpRouter() *gin.Engine {
 
 	setUpRestaurantRoutes(router)
 
+	setUpOrderRoutes(router)
 	return router
 }
 
@@ -35,6 +36,14 @@ func setUpAuthRoutes(router *gin.Engine) {
 	router.POST("/auth/restaurant", handlers.RestaurantLoginHandler)
 }
 
+func setUpOrderRoutes(router *gin.Engine) {
+	router.POST("/order", handlers.InitOrderHandler)
+	router.GET("/order/:orderId", handlers.GetOrderHandler)
+	router.PATCH("/orderpernding/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatpendingOrderHandler)
+	router.PATCH("/orderdelete/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatDeleteOrderHandler)
+	router.PATCH("/ordercompleted/:orderId", middlewares.AuthMiddleware, handlers.UpdatCompletedOrderHandler)
+}
+
 func main() {
 	router := SetUpRouter()
 	err := router.Run(":8080")
@@ -42,5 +51,4 @@ func main() {
 		log.Fatal("Error while starting the server: " + err.Error())
 		return
 	}
-
 }

@@ -2,11 +2,11 @@ package services
 
 import (
 	"serveur/server/models"
-)
 
-import (
 	"github.com/golang-jwt/jwt"
+
 	_ "github.com/golang-jwt/jwt"
+
 	_ "os"
 )
 
@@ -28,4 +28,14 @@ func ParseAccessToken(accessToken string) *models.ClientClaims {
 		return nil
 	}
 	return parsedAccessToken.Claims.(*models.ClientClaims)
+}
+
+func ParseAccessTokenResraurent(accessToken string) *models.RestaurantClaims {
+	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &models.RestaurantClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte("SECRET"), nil
+	})
+	if !parsedAccessToken.Valid {
+		return nil
+	}
+	return parsedAccessToken.Claims.(*models.RestaurantClaims)
 }

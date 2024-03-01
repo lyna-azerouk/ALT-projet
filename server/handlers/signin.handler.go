@@ -47,8 +47,6 @@ func ClientLoginHandler(c *gin.Context) {
 		}
 	}
 
-	fmt.Println(role)
-
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
@@ -75,6 +73,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 	var creds models.RestaurantCredentials
 
 	if err := c.BindJSON(&creds); err != nil {
+		fmt.Println(err)
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
 		return
 	}
@@ -109,7 +108,7 @@ func buildClientCredential(creds models.ClientCredentials, role string) models.C
 		Role:  role,
 		StandardClaims: jwt.StandardClaims{
 			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Minute).Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
 		},
 	}
 	return userClaims
