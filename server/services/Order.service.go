@@ -14,7 +14,7 @@ import (
 /*
 * Function that creates a new order
  */
-func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
+func CreateNewOrder(orderRequest models.OrderDetailsRequest) (models.OrderDetailsRequest, error) {
 	db, err := database.ConnectDB()
 
 	if err != nil {
@@ -35,7 +35,7 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 		orderRequest.RestaurantId, price, "PENDING", time.Now()).Scan(&orderId)
 
 	if err != nil {
-		return err
+		return models.OrderDetailsRequest{}, err
 	}
 
 	// Utilisation d'un WaitGroup pour attendre la fin de toutes les goroutines
@@ -66,12 +66,14 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) error {
 	// Récupérez les erreurs des goroutines
 	for err := range errChan {
 		if err != nil {
-			return err
+			return models.OrderDetailsRequest{}, err
 		}
 	}
 
 	db.Close()
-	return nil
+	order := GetOrderDetails(orderId)
+
+	return order, nil
 }
 
 /*

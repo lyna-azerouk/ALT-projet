@@ -19,13 +19,13 @@ func InitOrderHandler(c *gin.Context) {
 		return
 	}
 
-	err := services.CreateNewOrder(orderRequest)
+	order, err := services.CreateNewOrder(orderRequest)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Failed to create order"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"body": orderRequest})
+	c.JSON(http.StatusOK, gin.H{"body": order})
 }
 
 /*
