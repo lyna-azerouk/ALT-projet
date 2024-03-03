@@ -24,8 +24,9 @@ type OverPassResponse struct {
 }
 
 type BouffluenceRestaurant struct {
-	RestaurantDetails OverPassRestaurant `json:"restaurantDetails"`
-	Menu              []Menu             `json:"menus"`
+	RestaurantDetails    OverPassRestaurant `json:"restaurantDetails"`
+	Menu                 []Menu             `json:"menus"`
+	OrderAverageDuration int                `json:"order_average_duration"`
 }
 
 type Menu struct {
