@@ -62,7 +62,7 @@ func UpdatCompletedOrderHandler(c *gin.Context) {
 }
 
 /*
- Générate Code
+ Générate Code pour le client
 */
 
 func PickOrder(c *gin.Context) {
@@ -70,5 +70,18 @@ func PickOrder(c *gin.Context) {
 
 	code := services.GenerateCode(id_order)
 	c.JSON(http.StatusOK, gin.H{"Code": code})
+
+}
+
+/*
+	Verficiation du code
+*/
+
+func VerfyOrderCode(c *gin.Context) {
+	var id_order = c.Param("orderId")
+	var code = 112345678
+	order := services.VerfyOrderCode(id_order, code)
+
+	c.JSON(http.StatusOK, gin.H{"Code": order})
 
 }

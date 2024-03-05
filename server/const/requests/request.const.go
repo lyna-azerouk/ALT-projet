@@ -14,5 +14,5 @@ const (
 	DeleteOrderItemsRequestTemplate                     = "DELETE FROM order_items WHERE order_id = $1;"
 	DeleteOrderDetailsRequestTemplate                   = "DELETE FROM order_details WHERE id = $1"
 	SelectRestaurantOrderAverageDurationRequestTemplate = "SELECT order_average_duration FROM restaurant WHERE id = $1"
-	InsertCodeRequestTemplate                           = "UPDATE order_details SET code = $1 WHERE id = $2;"
+	InsertCodeRequestTemplate                           = "UPDATE order_details SET code_confirmation = $1 WHERE id = $2;"
 )

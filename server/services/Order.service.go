@@ -172,3 +172,24 @@ func GenerateCode(id_order string) int {
 
 	return code
 }
+
+/*
+Restaurent: A function that takes a code as a parameter and verifies if the code is valid
+*/
+
+func VerfyOrderCode(id_order string, code int) models.OrderDetailsRequest {
+
+	db, _ := database.ConnectDB()
+
+	query := requests.GetOrderRequestTemplate
+	_, err := db.Exec(query, code, id_order)
+
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("error with the database")
+	}
+
+	order := UpdateStatusOrder(id_order, "COMPLETED")
+
+	return order
+}
