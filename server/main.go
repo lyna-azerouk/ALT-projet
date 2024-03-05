@@ -42,6 +42,9 @@ func setUpOrderRoutes(router *gin.Engine) {
 	router.PATCH("/order/accept/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatpendingOrderHandler)
 	router.PATCH("/order/complete/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatCompletedOrderHandler)
 	router.PATCH("/order/delete/:orderId", middlewares.OrderAuth, handlers.UpdatDeleteOrderHandler)
+	router.GET("/order/pick/:orderId", middlewares.OrderClientAuth, handlers.PickOrder)
+	router.POST("/order/pick/:orderId", middlewares.OrderClientAuth) //I have no ides for the name of the function
+
 }
 
 func main() {

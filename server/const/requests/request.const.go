@@ -1,7 +1,7 @@
 package requests
 
 const (
-	SelectClientByEmailAndPasswordRequestTemplate       = "SELECT email, password, user_role FROM BL_USER WHERE email = $1 AND password = $2"
+	SelectClientByEmailAndPasswordRequestTemplate       = "SELECT id, email, user_role FROM BL_USER WHERE email = $1 AND password = $2"
 	SelectRestaurantByIdAndPasswordRequestTemplate      = "SELECT * FROM restaurant WHERE id = $1 AND password = $2"
 	SelectMenusByRestaurantIdRequestTemplate            = "SELECT * FROM menus WHERE restaurant_id = $1"
 	InsertNewClientRequestTemplate                      = ("INSERT into BL_USER (email, password, user_role) VALUES ($1, $2, $3)")
@@ -14,4 +14,5 @@ const (
 	DeleteOrderItemsRequestTemplate                     = "DELETE FROM order_items WHERE order_id = $1;"
 	DeleteOrderDetailsRequestTemplate                   = "DELETE FROM order_details WHERE id = $1"
 	SelectRestaurantOrderAverageDurationRequestTemplate = "SELECT order_average_duration FROM restaurant WHERE id = $1"
+	InsertCodeRequestTemplate                           = "UPDATE order_details SET code = $1 WHERE id = $2;"
 )

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"math/rand"
 	"serveur/server/const/requests"
 	"serveur/server/database"
 	"serveur/server/models"
@@ -148,4 +149,26 @@ func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
 		order_price = price + order_price
 	}
 	return order_price
+}
+
+/*
+Function that generate the code
+*/
+
+func GenerateCode(id_order string) int {
+	rand.Seed(time.Now().UnixNano())
+
+	code := rand.Intn(10000)
+
+	db, _ := database.ConnectDB()
+
+	query := requests.InsertCodeRequestTemplate
+	_, err := db.Exec(query, code, id_order)
+
+	if err != nil {
+		fmt.Println(err)
+		log.Fatal("MERDE")
+	}
+
+	return code
 }

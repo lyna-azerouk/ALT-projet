@@ -1,9 +1,10 @@
 package middlewares
 
 import (
-	"github.com/gin-gonic/gin"
 	"net/http"
-	"serveur/server/services/jwt"
+	services "serveur/server/services/jwt"
+
+	"github.com/gin-gonic/gin"
 )
 
 func AuthMiddleware(c *gin.Context) {
@@ -15,7 +16,7 @@ func AuthMiddleware(c *gin.Context) {
 		return
 	}
 
-	claims := services.ParseAccessToken(token)
+	claims := services.ParseClientAccessToken(token)
 
 	if claims == nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid token"})

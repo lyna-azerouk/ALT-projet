@@ -60,3 +60,15 @@ func UpdatCompletedOrderHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order  Completed", "order": order})
 }
+
+/*
+ Générate Code
+*/
+
+func PickOrder(c *gin.Context) {
+	var id_order = c.Param("orderId")
+
+	code := services.GenerateCode(id_order)
+	c.JSON(http.StatusOK, gin.H{"Code": code})
+
+}

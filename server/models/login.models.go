@@ -21,6 +21,7 @@ type Response struct {
 
 type ClientClaims struct {
 	Email string `json:"email"`
+	Id    int    `json:"id"`
 	Role  string `json:"role"`
 	jwt.StandardClaims
 }

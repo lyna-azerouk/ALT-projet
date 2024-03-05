@@ -20,7 +20,7 @@ func NewRestaurantAccessToken(claims models.RestaurantClaims) (string, error) {
 	return accessToken.SignedString([]byte("SECRET"))
 }
 
-func ParseAccessToken(accessToken string) *models.ClientClaims {
+func ParseClientAccessToken(accessToken string) *models.ClientClaims {
 	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &models.ClientClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte("SECRET"), nil
 	})
@@ -30,7 +30,7 @@ func ParseAccessToken(accessToken string) *models.ClientClaims {
 	return parsedAccessToken.Claims.(*models.ClientClaims)
 }
 
-func ParseAccessTokenResraurent(accessToken string) *models.RestaurantClaims {
+func ParseRestaurantAccessToken(accessToken string) *models.RestaurantClaims {
 	parsedAccessToken, err := jwt.ParseWithClaims(accessToken, &models.RestaurantClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte("SECRET"), nil
 	})
