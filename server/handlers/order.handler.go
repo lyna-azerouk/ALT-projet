@@ -68,7 +68,10 @@ func UpdatCompletedOrderHandler(c *gin.Context) {
 func PickOrder(c *gin.Context) {
 	var id_order = c.Param("orderId")
 
-	code := services.GenerateCode(id_order)
+	code, err := services.GenerateCode(id_order)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Failed to generate a code"})
+	}
 	c.JSON(http.StatusOK, gin.H{"Code": code})
 
 }
@@ -79,8 +82,12 @@ func PickOrder(c *gin.Context) {
 
 func VerfyOrderCode(c *gin.Context) {
 	var id_order = c.Param("orderId")
-	var code = 112345678
-	order := services.VerfyOrderCode(id_order, code)
+	var code = c.Param("code")
+	order, err := services.VerfyOrderCode(id_order, code)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Incorrect code"})
+	}
 
 	c.JSON(http.StatusOK, gin.H{"Code": order})
 

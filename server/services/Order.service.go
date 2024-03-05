@@ -8,6 +8,7 @@ import (
 	"serveur/server/const/requests"
 	"serveur/server/database"
 	"serveur/server/models"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -155,41 +156,53 @@ func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
 Function that generate the code
 */
 
-func GenerateCode(id_order string) int {
+func GenerateCode(id_order string) (int, error) {
 	rand.Seed(time.Now().UnixNano())
 
-	code := rand.Intn(10000)
+	code := rand.Intn(9000) + 1000
 
-	db, _ := database.ConnectDB()
-
-	query := requests.InsertCodeRequestTemplate
-	_, err := db.Exec(query, code, id_order)
-
+	db, err := database.ConnectDB()
 	if err != nil {
 		fmt.Println(err)
-		log.Fatal("MERDE")
+		return 0, err
 	}
 
-	return code
+	query := requests.InsertCodeRequestTemplate
+	num, err := strconv.Atoi(id_order)
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+
+	_, err = db.Exec(query, num, code)
+	if err != nil {
+		fmt.Println(err)
+		return 0, err
+	}
+
+	return code, nil
 }
 
 /*
 Restaurent: A function that takes a code as a parameter and verifies if the code is valid
 */
-
-func VerfyOrderCode(id_order string, code int) models.OrderDetailsRequest {
+func VerfyOrderCode(id_order string, code string) (models.OrderDetailsRequest, error) {
 
 	db, _ := database.ConnectDB()
 
-	query := requests.GetOrderRequestTemplate
-	_, err := db.Exec(query, code, id_order)
+	query := requests.GetOrderCodeTemplate
+	num_order, _ := strconv.Atoi(id_order)
+	num_code, _ := strconv.Atoi(code)
+	row, err := db.Exec(query, num_order, num_code)
+	fmt.Println(row)
 
 	if err != nil {
 		fmt.Println(err)
 		log.Fatal("error with the database")
+		return models.OrderDetailsRequest{}, err
 	}
 
 	order := UpdateStatusOrder(id_order, "COMPLETED")
 
-	return order
+	return order, nil
 }
