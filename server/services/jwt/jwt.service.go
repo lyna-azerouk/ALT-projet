@@ -31,10 +31,10 @@ func ParseAccessToken(accessToken string) *models.ClientClaims {
 }
 
 func ParseAccessTokenResraurent(accessToken string) *models.RestaurantClaims {
-	parsedAccessToken, _ := jwt.ParseWithClaims(accessToken, &models.RestaurantClaims{}, func(token *jwt.Token) (interface{}, error) {
+	parsedAccessToken, err := jwt.ParseWithClaims(accessToken, &models.RestaurantClaims{}, func(token *jwt.Token) (interface{}, error) {
 		return []byte("SECRET"), nil
 	})
-	if !parsedAccessToken.Valid {
+	if err != nil || !parsedAccessToken.Valid {
 		return nil
 	}
 	return parsedAccessToken.Claims.(*models.RestaurantClaims)

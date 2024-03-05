@@ -13,6 +13,11 @@ func VerifyOrderMiddleware(c *gin.Context) {
 	token := extractToken(c)
 
 	claims := JwtService.ParseAccessTokenResraurent(token)
+	if claims == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "The provided token is invalid"})
+		c.Abort()
+		return
+	}
 
 	orderID := c.Param("orderId")
 
@@ -22,6 +27,36 @@ func VerifyOrderMiddleware(c *gin.Context) {
 
 	if order.RestaurantId != claims.Id {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Unauthorized to update status"})
+		c.Abort()
+		return
+	}
+	c.Next()
+}
+
+func OrderAuth(c *gin.Context) {
+	token := extractToken(c)
+	if token == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Unauthorized to access this order"})
+		c.Abort()
+		return
+	}
+
+	claims := JwtService.ParseAccessTokenResraurent(token)
+
+	if claims == nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "The provided token is invalid"})
+		c.Abort()
+		return
+	}
+
+	orderID := c.Param("orderId")
+
+	var order models.OrderDetailsRequest
+
+	order = services.GetOrderDetails(orderID)
+
+	if order.RestaurantId != claims.Id && order.ClientId != claims.Id {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Unauthorized to access this order"})
 		c.Abort()
 		return
 	}
