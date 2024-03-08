@@ -2,8 +2,8 @@ package models
 
 // order request
 type OrderDetailsRequest struct {
-	ClientId     uint64      `json:"clientId"`
-	RestaurantId uint64      `json:"restaurantId"`
+	ClientId     string      `json:"clientId"`
+	RestaurantId string      `json:"restaurantId"`
 	OrderItems   []OrderItem `json:"items"`
 	Status       string      `json:"status"`
 	Price        float64     `json:"price"`
@@ -11,7 +11,7 @@ type OrderDetailsRequest struct {
 }
 
 type OrderDetails struct {
-	ClientId     uint64      `json:"clientId"`
+	ClientId     string      `json:"clientId"`
 	ClientEmail  int         `json:"clientId"`
 	RestaurantId int         `json:"restaurantId"`
 	OrderItems   []OrderItem `json:"items"`
@@ -21,7 +21,7 @@ type OrderDetails struct {
 }
 
 type OrderItem struct {
-	MenuId uint64 `json:"menuId"`
+	MenuId string `json:"menuId"`
 	Count  int    `json:"count"`
 }
 

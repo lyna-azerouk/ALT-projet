@@ -104,7 +104,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 	restaurantClaims := buildRestaurantCredential(creds)
 
 	signedAccessToken, err := services.NewRestaurantAccessToken(restaurantClaims)
-	
+
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
@@ -124,7 +124,7 @@ func buildRestaurantCredential(creds models.RestaurantCredentials) models.Restau
 	return restaurantClaims
 }
 
-func buildClientCredential(creds models.ClientCredentials, role string, id uint64) models.ClientClaims {
+func buildClientCredential(creds models.ClientCredentials, role string, id string) models.ClientClaims {
 	userClaims := models.ClientClaims{
 		Id:    id,
 		Email: creds.Email,
