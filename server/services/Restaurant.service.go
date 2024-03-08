@@ -68,11 +68,29 @@ func GetRestaurantDetails(restaurantID int) models.BouffluenceRestaurant {
 	// retrieve menu
 	var menus = GetMenusByRestaurantId(restaurantID)
 	restaurant := models.BouffluenceRestaurant{
-		RestaurantDetails: overPassResponse.Elements[0],
-		Menu:              menus,
+		RestaurantDetails:    overPassResponse.Elements[0],
+		Menu:                 menus,
+		OrderAverageDuration: GetRestaurantOrderAverageDuration(restaurantID),
 	}
 	return restaurant
 
+}
+
+func GetRestaurantOrderAverageDuration(restaurantID int) int {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return 0
+	}
+	query := requests.SelectRestaurantOrderAverageDurationRequestTemplate
+	row := db.QueryRow(query, restaurantID)
+	var orderAverageDuration int
+	err = row.Scan(&orderAverageDuration)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return 0
+	}
+	return orderAverageDuration
 }
 
 func GetMenusByRestaurantId(restaurantId int) []models.Menu {

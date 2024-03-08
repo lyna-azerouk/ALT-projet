@@ -60,3 +60,35 @@ func UpdatCompletedOrderHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"message": "Order  Completed", "order": order})
 }
+
+/*
+ Générate Code pour le client
+*/
+
+func PickOrder(c *gin.Context) {
+	var id_order = c.Param("orderId")
+
+	code, err := services.GenerateCode(id_order)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Failed to generate a code"})
+	}
+	c.JSON(http.StatusOK, gin.H{"Code": code})
+
+}
+
+/*
+	Verficiation du code
+*/
+
+func VerfyOrderCode(c *gin.Context) {
+	var id_order = c.Param("orderId")
+	var code = c.Param("code")
+	order, err := services.VerfyOrderCode(id_order, code)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Incorrect code"})
+	}
+
+	c.JSON(http.StatusOK, gin.H{"Code": order})
+
+}

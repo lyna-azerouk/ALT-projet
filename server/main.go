@@ -22,26 +22,35 @@ func SetUpRouter() *gin.Engine {
 	setUpRestaurantRoutes(router)
 
 	setUpOrderRoutes(router)
+
+	setUpUserRoutes(router)
 	return router
 }
 
+func setUpUserRoutes(router *gin.Engine) {
+	router.GET("/client/:clientId", middlewares.AuthMiddleware, handlers.UserDetailsHandler)
+}
+
 func setUpRestaurantRoutes(router *gin.Engine) {
-	router.GET("/restaurants/:long/:lal/:radius", handlers.RestaurantsHandler)
-	router.GET("/restaurant/:restaurantId", handlers.RestaurantDetailsHandler)
+	router.GET("/restaurants/:long/:lal/:radius", middlewares.AuthMiddleware, handlers.RestaurantsHandler)
+	router.GET("/restaurant/:restaurantId", middlewares.AuthMiddleware, handlers.RestaurantDetailsHandler)
 }
 
 func setUpAuthRoutes(router *gin.Engine) {
-	router.POST("/signup", handlers.RegistrationHandler)
+	router.POST("/signup/client", handlers.RegistrationHandler)
 	router.POST("/auth/client", handlers.ClientLoginHandler)
 	router.POST("/auth/restaurant", handlers.RestaurantLoginHandler)
 }
 
 func setUpOrderRoutes(router *gin.Engine) {
-	router.POST("/order", handlers.InitOrderHandler)
-	router.GET("/order/:orderId", handlers.GetOrderHandler)
-	router.PATCH("/orderpernding/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatpendingOrderHandler)
-	router.PATCH("/orderdelete/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatDeleteOrderHandler)
-	router.PATCH("/ordercompleted/:orderId", middlewares.AuthMiddleware, handlers.UpdatCompletedOrderHandler)
+	router.POST("/order", middlewares.AuthMiddleware, handlers.InitOrderHandler)
+	router.GET("/order/:orderId", middlewares.OrderAuth, handlers.GetOrderHandler)
+	router.PATCH("/order/accept/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatpendingOrderHandler)
+	router.PATCH("/order/complete/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatCompletedOrderHandler)
+	router.PATCH("/order/delete/:orderId", middlewares.OrderAuth, handlers.UpdatDeleteOrderHandler)
+	router.GET("/order/pick/:orderId", middlewares.OrderClientAuth, handlers.PickOrder)             //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
+	router.POST("/order/pick/:orderId/:code", middlewares.OrderClientAuth, handlers.VerfyOrderCode) //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
+
 }
 
 func main() {

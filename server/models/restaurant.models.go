@@ -10,7 +10,7 @@ type Tags struct {
 
 type OverPassRestaurant struct {
 	Type string  `json:"type"`
-	ID   int     `json:"id"`
+	ID   uint64     `json:"id"`
 	Lat  float64 `json:"lat"`
 	Lon  float64 `json:"lon"`
 	Tags Tags    `json:"tags"`
@@ -24,12 +24,13 @@ type OverPassResponse struct {
 }
 
 type BouffluenceRestaurant struct {
-	RestaurantDetails OverPassRestaurant `json:"restaurantDetails"`
-	Menu              []Menu             `json:"menus"`
+	RestaurantDetails    OverPassRestaurant `json:"restaurantDetails"`
+	Menu                 []Menu             `json:"menus"`
+	OrderAverageDuration int                `json:"order_average_duration"`
 }
 
 type Menu struct {
-	Id           int            `json:"id"`
+	Id           uint64            `json:"id"`
 	Name         string         `json:"name"`
 	Price        int            `json:"price"`
 	RestaurantID int            `json:"restaurent_id"`

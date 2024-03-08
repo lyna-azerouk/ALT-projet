@@ -34,33 +34,38 @@ func ClientLoginHandler(c *gin.Context) {
 	}
 
 	hash := sha256.Sum256([]byte(creds.Password))
-
 	row, err := db.Query(
 		requests.SelectClientByEmailAndPasswordRequestTemplate,
 		creds.Email, hex.EncodeToString(hash[:]))
-
-	var email, password, role string
-
-	if row.Next() {
-		if err := row.Scan(&email, &password, &role); err != nil {
-			log.Fatal(err)
-		}
-	}
 
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
 	}
 
+	var clientClaims models.ClientClaims
+	var role string
+	for row.Next() {
+		err := row.Scan(&clientClaims.Id, &clientClaims.Email, &role)
+		if err != nil {
+			c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
+			return
+		}
+	}
+
 	// user auth is success, create a new token valid for 30 min
-	clientClaims := buildClientCredential(creds, actualRole(role))
+	clientClaims = buildClientCredential(creds, actualRole(role), clientClaims.Id)
 
 	signedAccessToken, err := services.NewClientAccessToken(clientClaims)
-	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken, "id": clientClaims.Id})
 }
 
 func actualRole(role string) string {
-	println("role: " + role)
 	if role == "CLIENT" {
 		return roles.ClientRole
 	} else {
@@ -99,19 +104,13 @@ func RestaurantLoginHandler(c *gin.Context) {
 	restaurantClaims := buildRestaurantCredential(creds)
 
 	signedAccessToken, err := services.NewRestaurantAccessToken(restaurantClaims)
-	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken})
-}
-
-func buildClientCredential(creds models.ClientCredentials, role string) models.ClientClaims {
-	userClaims := models.ClientClaims{
-		Email: creds.Email,
-		Role:  role,
-		StandardClaims: jwt.StandardClaims{
-			IssuedAt:  time.Now().Unix(),
-			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
-		},
+	
+	if err != nil {
+		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
+		return
 	}
-	return userClaims
+
+	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken, "id": creds.Id})
 }
 
 func buildRestaurantCredential(creds models.RestaurantCredentials) models.RestaurantClaims {
@@ -123,4 +122,17 @@ func buildRestaurantCredential(creds models.RestaurantCredentials) models.Restau
 		},
 	}
 	return restaurantClaims
+}
+
+func buildClientCredential(creds models.ClientCredentials, role string, id uint64) models.ClientClaims {
+	userClaims := models.ClientClaims{
+		Id:    id,
+		Email: creds.Email,
+		Role:  role,
+		StandardClaims: jwt.StandardClaims{
+			IssuedAt:  time.Now().Unix(),
+			ExpiresAt: time.Now().Add(time.Hour * 24).Unix(),
+		},
+	}
+	return userClaims
 }
