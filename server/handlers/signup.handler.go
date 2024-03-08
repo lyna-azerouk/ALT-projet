@@ -28,7 +28,7 @@ func RegistrationHandler(c *gin.Context) {
 
 	hash := sha256.Sum256([]byte(creds.Password))
 	query := requests.InsertNewClientRequestTemplate
-	_, err = db.Exec(query, creds.Email, hex.EncodeToString(hash[:]), "CLIENT")
+	_, err = db.Exec(query, creds.Email, hex.EncodeToString(hash[:]), "CLIENT", creds.FirstName, creds.LastName)
 
 	if err != nil {
 		c.JSON(http.StatusConflict, gin.H{"status": "user already exist in data base"})
