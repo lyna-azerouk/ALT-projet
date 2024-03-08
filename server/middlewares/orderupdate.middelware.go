@@ -1,6 +1,7 @@
 package middlewares
 
 import (
+	"log"
 	"net/http"
 	"serveur/server/models"
 	"serveur/server/services"
@@ -84,6 +85,9 @@ func OrderClientAuth(c *gin.Context) {
 	var orderDetails models.OrderDetailsRequest
 
 	orderDetails = services.GetOrderDetails(orderID)
+	// log client and order ids
+	log.Println("client id: ", clientClaims.Id)
+	log.Println("order client id: ", orderDetails.ClientId)
 
 	if orderDetails.ClientId != clientClaims.Id {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Unauthorized to access this order"})

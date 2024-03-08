@@ -2,8 +2,8 @@ package models
 
 // order request
 type OrderDetailsRequest struct {
-	ClientId     int         `json:"clientId"`
-	RestaurantId int         `json:"restaurantId"`
+	ClientId     uint64      `json:"clientId"`
+	RestaurantId uint64      `json:"restaurantId"`
 	OrderItems   []OrderItem `json:"items"`
 	Status       string      `json:"status"`
 	Price        float64     `json:"price"`
@@ -11,8 +11,8 @@ type OrderDetailsRequest struct {
 }
 
 type OrderDetails struct {
-	ClientId     int         `json:"clientId"`
-	ClientEmail     int         `json:"clientId"`
+	ClientId     uint64      `json:"clientId"`
+	ClientEmail  int         `json:"clientId"`
 	RestaurantId int         `json:"restaurantId"`
 	OrderItems   []OrderItem `json:"items"`
 	Status       string      `json:"status"`
@@ -21,8 +21,8 @@ type OrderDetails struct {
 }
 
 type OrderItem struct {
-	MenuId int `json:"menuId"`
-	Count  int `json:"count"`
+	MenuId uint64 `json:"menuId"`
+	Count  int    `json:"count"`
 }
 
 // order response: en fonction des besoins du client ????

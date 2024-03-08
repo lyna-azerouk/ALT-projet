@@ -42,8 +42,8 @@ func setUpOrderRoutes(router *gin.Engine) {
 	router.PATCH("/order/accept/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatpendingOrderHandler)
 	router.PATCH("/order/complete/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatCompletedOrderHandler)
 	router.PATCH("/order/delete/:orderId", middlewares.OrderAuth, handlers.UpdatDeleteOrderHandler)
-	router.GET("/order/pick/:orderId", handlers.PickOrder)             //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
-	router.POST("/order/pick/:orderId/:code", handlers.VerfyOrderCode) //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
+	router.GET("/order/pick/:orderId", middlewares.OrderClientAuth, handlers.PickOrder)             //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
+	router.POST("/order/pick/:orderId/:code", middlewares.OrderClientAuth, handlers.VerfyOrderCode) //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
 
 }
 

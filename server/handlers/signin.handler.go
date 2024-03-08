@@ -113,7 +113,7 @@ func buildRestaurantCredential(creds models.RestaurantCredentials) models.Restau
 	return restaurantClaims
 }
 
-func buildClientCredential(creds models.ClientCredentials, role string, id int) models.ClientClaims {
+func buildClientCredential(creds models.ClientCredentials, role string, id uint64) models.ClientClaims {
 	userClaims := models.ClientClaims{
 		Id:    id,
 		Email: creds.Email,
