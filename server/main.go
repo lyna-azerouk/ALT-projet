@@ -31,7 +31,7 @@ func setUpRestaurantRoutes(router *gin.Engine) {
 }
 
 func setUpAuthRoutes(router *gin.Engine) {
-	router.POST("/signup", handlers.RegistrationHandler)
+	router.POST("/signup/client", handlers.RegistrationHandler)
 	router.POST("/auth/client", handlers.ClientLoginHandler)
 	router.POST("/auth/restaurant", handlers.RestaurantLoginHandler)
 }
