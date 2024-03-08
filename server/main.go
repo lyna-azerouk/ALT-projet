@@ -22,7 +22,13 @@ func SetUpRouter() *gin.Engine {
 	setUpRestaurantRoutes(router)
 
 	setUpOrderRoutes(router)
+
+	setUpUserRoutes(router)
 	return router
+}
+
+func setUpUserRoutes(router *gin.Engine) {
+	router.GET("/client/:clientId", middlewares.AuthMiddleware, handlers.UserDetailsHandler)
 }
 
 func setUpRestaurantRoutes(router *gin.Engine) {
