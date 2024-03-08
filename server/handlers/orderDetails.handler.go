@@ -14,3 +14,14 @@ func GetOrderHandler(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{"order": order})
 }
+
+func GetOrdersHandler(c *gin.Context) {
+	var uderId = c.Param("userId")
+
+	orders, err := services.GetUserOrdersDetails(uderId)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Failed to get user Orders"})
+	}
+	c.JSON(http.StatusOK, gin.H{"User orders": orders})
+}

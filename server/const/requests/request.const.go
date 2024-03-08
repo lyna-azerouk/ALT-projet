@@ -17,4 +17,5 @@ const (
 	InsertCodeRequestTemplate                           = "INSERT into Orders_Code (order_id, code_confirmation) VALUES ($1, $2)"
 	GetOrderCodeTemplate                                = "Select code_confirmation FROM Orders_Code WHERE order_id= $1 AND code_confirmation=$2 "
 	GetUserDetailsRequestTemplate                       = "SELECT id, first_name, last_name, email FROM BL_USER WHERE id = $1"
+	GetUserOrdersTemplate                               = "Select id From order_details where client_id= $1"
 )
