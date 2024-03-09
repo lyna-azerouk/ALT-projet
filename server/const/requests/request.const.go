@@ -18,4 +18,5 @@ const (
 	GetOrderCodeTemplate                                = "Select code_confirmation FROM Orders_Code WHERE order_id= $1 AND code_confirmation=$2 "
 	GetUserDetailsRequestTemplate                       = "SELECT id, first_name, last_name, email FROM BL_USER WHERE id = $1"
 	GetUserOrdersTemplate                               = "Select id From order_details where client_id= $1"
+	GetRestaurantOrdersTemplate						 = "Select id From order_details where restaurant_id= $1"
 )

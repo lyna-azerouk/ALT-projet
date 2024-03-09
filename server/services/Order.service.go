@@ -239,3 +239,32 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
 
 	return orders, nil
 }
+
+func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetailsRequest, error) {
+	var restaurantIdNumber int
+	restaurantIdNumber, _ = strconv.Atoi(restaurantId)
+
+	db, _ := database.ConnectDB()
+	query := requests.GetRestaurantOrdersTemplate
+	rows, err := db.Query(query, restaurantIdNumber)
+
+	if err != nil {
+		return []models.OrderDetailsRequest{}, err
+	}
+
+	var orders []models.OrderDetailsRequest
+
+	for rows.Next() {
+		var orderid string
+		var order models.OrderDetailsRequest
+		err := rows.Scan(&orderid)
+
+		if err != nil {
+			return []models.OrderDetailsRequest{}, err
+		}
+		order = GetOrderDetails(orderid)
+		orders = append(orders, order)
+	}
+
+	return orders, nil
+}

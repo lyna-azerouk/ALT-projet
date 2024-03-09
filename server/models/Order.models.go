@@ -12,7 +12,7 @@ type OrderDetailsRequest struct {
 
 type OrderDetails struct {
 	ClientId     uint64      `json:"clientId"`
-	ClientEmail  int         `json:"clientId"`
+	ClientEmail  int         `json:"clientEmail"`
 	RestaurantId int         `json:"restaurantId"`
 	OrderItems   []OrderItem `json:"items"`
 	Status       string      `json:"status"`
