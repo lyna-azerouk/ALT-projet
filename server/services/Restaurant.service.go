@@ -117,3 +117,21 @@ func GetMenusByRestaurantId(restaurantId int) []models.Menu {
 	}
 	return menus
 }
+
+
+func GetMenuDetails(menuId uint64) models.Menu {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return models.Menu{}
+	}
+	query := requests.SelectMenuByIdTemplate
+	row := db.QueryRow(query, menuId)
+	var menu models.Menu
+	err = row.Scan(&menu.Id, &menu.Name, &menu.Price, &menu.RestaurantID, &menu.Description, &menu.Image)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return models.Menu{}
+	}
+	return menu
+}

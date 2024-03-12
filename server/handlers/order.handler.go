@@ -92,3 +92,14 @@ func VerfyOrderCode(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"Code": order})
 
 }
+
+/*
+Get menu details by iD
+*/
+
+func GetMenuDetailsHandler(c *gin.Context) {
+	var menu_id = c.Param("menus_id")
+	menu := services.GetMenuDetails(menu_id)
+
+	c.JSON(http.StatusOK, gin.H{"Menu": menu})
+}
