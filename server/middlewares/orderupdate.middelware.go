@@ -22,7 +22,7 @@ func VerifyOrderMiddleware(c *gin.Context) {
 
 	orderID := c.Param("orderId")
 
-	var order models.OrderDetailsRequest
+	var order models.OrderDetails
 
 	order = services.GetOrderDetails(orderID)
 
@@ -52,7 +52,7 @@ func OrderAuth(c *gin.Context) {
 
 	orderID := c.Param("orderId")
 
-	var order models.OrderDetailsRequest
+	var order models.OrderDetails
 
 	order = services.GetOrderDetails(orderID)
 
@@ -82,7 +82,7 @@ func OrderClientAuth(c *gin.Context) {
 
 	orderID := c.Param("orderId")
 
-	var orderDetails models.OrderDetailsRequest
+	var orderDetails models.OrderDetails
 
 	orderDetails = services.GetOrderDetails(orderID)
 	// log client and order ids

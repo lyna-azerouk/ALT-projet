@@ -16,7 +16,7 @@ import (
 /*
 * Function that creates a new order
  */
-func CreateNewOrder(orderRequest models.OrderDetailsRequest) (models.OrderDetailsRequest, error) {
+func CreateNewOrder(orderRequest models.OrderDetails) (models.OrderDetails, error) {
 	db, err := database.ConnectDB()
 
 	if err != nil {
@@ -37,7 +37,7 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) (models.OrderDetail
 		orderRequest.RestaurantId, price, "PENDING", time.Now()).Scan(&orderId)
 
 	if err != nil {
-		return models.OrderDetailsRequest{}, err
+		return models.OrderDetails{}, err
 	}
 
 	// Utilisation d'un WaitGroup pour attendre la fin de toutes les goroutines
@@ -68,7 +68,7 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) (models.OrderDetail
 	// Récupérez les erreurs des goroutines
 	for err := range errChan {
 		if err != nil {
-			return models.OrderDetailsRequest{}, err
+			return models.OrderDetails{}, err
 		}
 	}
 
@@ -81,9 +81,9 @@ func CreateNewOrder(orderRequest models.OrderDetailsRequest) (models.OrderDetail
 /*
 *Get all the details of an order
  */
-func GetOrderDetails(id_order string) models.OrderDetailsRequest {
+func GetOrderDetails(id_order string) models.OrderDetails {
 	db, _ := database.ConnectDB()
-	var order models.OrderDetailsRequest
+	var order models.OrderDetails
 	var id string
 
 	query_order := requests.GetOrderRequestTemplate
@@ -106,10 +106,10 @@ func GetOrderDetails(id_order string) models.OrderDetailsRequest {
 *
 Update the status of the order from Pending to In-Progress
 */
-func UpdateStatusOrder(id_order string, status string) models.OrderDetailsRequest {
+func UpdateStatusOrder(id_order string, status string) models.OrderDetails {
 	db, _ := database.ConnectDB()
 
-	var order models.OrderDetailsRequest
+	var order models.OrderDetails
 
 	query := requests.UpdateStatusOrderRequestTemplate
 	_, err := db.Exec(query, status, id_order)
@@ -186,7 +186,7 @@ func GenerateCode(id_order string) (int, error) {
 /*
 Restaurent: A function that takes a code as a parameter and verifies if the code is valid
 */
-func VerfyOrderCode(id_order string, code string) (models.OrderDetailsRequest, error) {
+func VerfyOrderCode(id_order string, code string) (models.OrderDetails, error) {
 
 	db, _ := database.ConnectDB()
 
@@ -199,7 +199,7 @@ func VerfyOrderCode(id_order string, code string) (models.OrderDetailsRequest, e
 	if err != nil {
 		fmt.Println(err)
 		log.Fatal("error with the database")
-		return models.OrderDetailsRequest{}, err
+		return models.OrderDetails{}, err
 	}
 
 	order := UpdateStatusOrder(id_order, "COMPLETED")
@@ -211,7 +211,7 @@ func VerfyOrderCode(id_order string, code string) (models.OrderDetailsRequest, e
 Function that return all the orders of a user
 */
 
-func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
+func GetUserOrdersDetails(userId string) ([]models.OrderDetails, error) {
 	var userIdNumber int
 	userIdNumber, _ = strconv.Atoi(userId)
 
@@ -220,18 +220,18 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
 	rows, err := db.Query(query, userIdNumber)
 
 	if err != nil {
-		return []models.OrderDetailsRequest{}, err
+		return []models.OrderDetails{}, err
 	}
 
-	var orders []models.OrderDetailsRequest
+	var orders []models.OrderDetails
 
 	for rows.Next() {
 		var orderid string
-		var order models.OrderDetailsRequest
+		var order models.OrderDetails
 		err := rows.Scan(&orderid)
 
 		if err != nil {
-			return []models.OrderDetailsRequest{}, err
+			return []models.OrderDetails{}, err
 		}
 		order = GetOrderDetails(orderid)
 		orders = append(orders, order)
@@ -240,7 +240,7 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
 	return orders, nil
 }
 
-func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetailsRequest, error) {
+func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetails, error) {
 	var restaurantIdNumber int
 	restaurantIdNumber, _ = strconv.Atoi(restaurantId)
 
@@ -249,18 +249,18 @@ func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetailsReque
 	rows, err := db.Query(query, restaurantIdNumber)
 
 	if err != nil {
-		return []models.OrderDetailsRequest{}, err
+		return []models.OrderDetails{}, err
 	}
 
-	var orders []models.OrderDetailsRequest
+	var orders []models.OrderDetails
 
 	for rows.Next() {
 		var orderid string
-		var order models.OrderDetailsRequest
+		var order models.OrderDetails
 		err := rows.Scan(&orderid)
 
 		if err != nil {
-			return []models.OrderDetailsRequest{}, err
+			return []models.OrderDetails{}, err
 		}
 		order = GetOrderDetails(orderid)
 		orders = append(orders, order)
