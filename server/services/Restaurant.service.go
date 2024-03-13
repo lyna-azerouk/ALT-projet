@@ -118,7 +118,9 @@ func GetMenusByRestaurantId(restaurantId int) []models.Menu {
 	return menus
 }
 
-
+/*
+* Function that return the details of a menu
+*/
 func GetMenuDetails(menuId uint64) models.Menu {
 	db, err := database.ConnectDB()
 	if err != nil {

@@ -26,12 +26,11 @@ Function that return all the orders of a user
 */
 
 func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
-	var userIdNumber int
-	userIdNumber, _ = strconv.Atoi(userId)
+
 
 	db, _ := database.ConnectDB()
 	query := requests.GetUserOrdersTemplate
-	rows, err := db.Query(query, userIdNumber)
+	rows, err := db.Query(query,  userId)
 
 	if err != nil {
 		return []models.OrderDetailsRequest{}, err

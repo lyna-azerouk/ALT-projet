@@ -44,14 +44,14 @@ func setUpAuthRoutes(router *gin.Engine) {
 
 func setUpOrderRoutes(router *gin.Engine) {
 	router.POST("/order", middlewares.AuthMiddleware, handlers.InitOrderHandler)
-	router.GET("/order/:orderId", middlewares.OrderAuth, handlers.GetOrderHandler)
+	router.GET("/order/:orderId", middlewares.AuthMiddleware, handlers.GetOrderHandler)
 	router.PATCH("/order/accept/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatpendingOrderHandler)
 	router.PATCH("/order/complete/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatCompletedOrderHandler)
 	router.PATCH("/order/delete/:orderId", middlewares.OrderAuth, handlers.UpdatDeleteOrderHandler)
 	router.GET("/order/pick/:orderId", middlewares.OrderClientAuth, handlers.PickOrder)             //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
 	router.POST("/order/pick/:orderId/:code", middlewares.OrderClientAuth, handlers.VerfyOrderCode) //I removed the verfication because it will always fail the token in bdd is not the same as the token in jwt
 	router.GET("user/orders/:userId", middlewares.AuthMiddleware, handlers.GetOrdersHandler)
-	router.GET("user/orders/:userId/menu_id", middlewares.AuthMiddleware, handlers.GetMenuDetailsHandler)
+	router.GET("user/order/:order_id/:menu_id", middlewares.AuthMiddleware, handlers.GetMenuDetailsHandler)
 	
 
 }

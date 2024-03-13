@@ -2,9 +2,10 @@ package handlers
 
 import (
 	"net/http"
+	"strconv"
 	"serveur/server/models"
 	"serveur/server/services"
-
+	"fmt"
 	"github.com/gin-gonic/gin"
 )
 
@@ -90,7 +91,6 @@ func VerfyOrderCode(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Code": order})
-
 }
 
 /*
@@ -98,7 +98,13 @@ Get menu details by iD
 */
 
 func GetMenuDetailsHandler(c *gin.Context) {
-	var menu_id = c.Param("menus_id")
+	menu_id_str := c.Param("menu_id")
+	fmt.Println(menu_id_str)
+	menu_id, err := strconv.ParseUint(menu_id_str, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid menu ID"})
+		return
+	}
 	menu := services.GetMenuDetails(menu_id)
 
 	c.JSON(http.StatusOK, gin.H{"Menu": menu})

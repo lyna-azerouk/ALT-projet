@@ -34,6 +34,6 @@ type Menu struct {
 	Name         string         `json:"name"`
 	Price        int            `json:"price"`
 	RestaurantID int            `json:"restaurent_id"`
-	Description  sql.NullString `json:"description"`
-	Image        sql.NullString `json:"url"`
+	Description  sql.NullString `string:"description"`
+	Image        sql.NullString `string:"url"`
 }

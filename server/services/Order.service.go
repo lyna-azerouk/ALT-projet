@@ -140,7 +140,7 @@ func GetPrice(db *sql.DB, liste []models.OrderItem) float64 {
 	var price float64
 
 	for _, item := range liste {
-		query := requests.SelectMenuByIdTemplate
+		query := requests.SelectMenuPriceByIdTemplate
 
 		err := db.QueryRow(query, item.MenuId).Scan(&price)
 
