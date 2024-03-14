@@ -11,6 +11,7 @@ import (
 	"serveur/server/database"
 	"serveur/server/models"
 	services "serveur/server/services/jwt"
+	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -62,7 +63,7 @@ func ClientLoginHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken, "id": clientClaims.Id})
+	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken, "id": strconv.FormatUint(clientClaims.Id, 10)})
 }
 
 func actualRole(role string) string {
@@ -104,7 +105,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 	restaurantClaims := buildRestaurantCredential(creds)
 
 	signedAccessToken, err := services.NewRestaurantAccessToken(restaurantClaims)
-	
+
 	if err != nil {
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
