@@ -84,10 +84,9 @@ func CreateNewOrder(orderRequest models.OrderDetails) (models.OrderDetails, erro
 func GetOrderDetails(id_order string) models.OrderDetails {
 	db, _ := database.ConnectDB()
 	var order models.OrderDetails
-	var id string
 
 	query_order := requests.GetOrderRequestTemplate
-	db.QueryRow(query_order, id_order).Scan(&id, &order.RestaurantId, &order.ClientId, &order.Price, &order.Date, &order.Status)
+	db.QueryRow(query_order, id_order).Scan(&order.Id, &order.RestaurantId, &order.ClientId, &order.Price, &order.Date, &order.Status)
 
 	query_items := requests.GetOrderItemsRequestTemplate
 	rows_order_items, _ := db.Query(query_items, id_order)
