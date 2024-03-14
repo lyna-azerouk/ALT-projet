@@ -8,6 +8,7 @@ import (
 	"serveur/server/const/requests"
 	"serveur/server/database"
 	"serveur/server/models"
+	"serveur/server/adapters"
 	"strconv"
 	"sync"
 	"time"
@@ -84,10 +85,9 @@ func CreateNewOrder(orderRequest models.OrderDetails) (models.OrderDetails, erro
 func GetOrderDetails(id_order string) models.OrderDetails {
 	db, _ := database.ConnectDB()
 	var order models.OrderDetails
-	var id string
 
 	query_order := requests.GetOrderRequestTemplate
-	db.QueryRow(query_order, id_order).Scan(&id, &order.RestaurantId, &order.ClientId, &order.Price, &order.Date, &order.Status)
+	db.QueryRow(query_order, id_order).Scan(&order.Id, &order.RestaurantId, &order.ClientId, &order.Price, &order.Date, &order.Status)
 
 	query_items := requests.GetOrderItemsRequestTemplate
 	rows_order_items, _ := db.Query(query_items, id_order)
@@ -95,7 +95,7 @@ func GetOrderDetails(id_order string) models.OrderDetails {
 	for rows_order_items.Next() {
 		var order_item models.OrderItem
 
-		rows_order_items.Scan(&order_item.MenuId, order_item.Count)
+		rows_order_items.Scan(&order_item.MenuId, &order_item.Count)
 
 		order.OrderItems = append(order.OrderItems, order_item)
 	}
@@ -211,7 +211,7 @@ func VerfyOrderCode(id_order string, code string) (models.OrderDetails, error) {
 Function that return all the orders of a user
 */
 
-func GetUserOrdersDetails(userId string) ([]models.OrderDetails, error) {
+func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
 	var userIdNumber int
 	userIdNumber, _ = strconv.Atoi(userId)
 
@@ -220,10 +220,10 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetails, error) {
 	rows, err := db.Query(query, userIdNumber)
 
 	if err != nil {
-		return []models.OrderDetails{}, err
+		return []models.OrderDetailsRequest{}, err
 	}
 
-	var orders []models.OrderDetails
+	var orders []models.OrderDetailsRequest
 
 	for rows.Next() {
 		var orderid string
@@ -231,10 +231,10 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetails, error) {
 		err := rows.Scan(&orderid)
 
 		if err != nil {
-			return []models.OrderDetails{}, err
+			return []models.OrderDetailsRequest{}, err
 		}
 		order = GetOrderDetails(orderid)
-		orders = append(orders, order)
+		orders = append(orders, adapters.OrderDetailsToOrderRequestMapper(order))
 	}
 
 	return orders, nil
