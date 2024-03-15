@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
+	"serveur/server/adapters"
 	"serveur/server/const/requests"
 	"serveur/server/database"
 	"serveur/server/models"
-	"serveur/server/adapters"
 	"strconv"
 	"sync"
 	"time"
@@ -240,7 +240,7 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
 	return orders, nil
 }
 
-func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetails, error) {
+func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetailsRequest, error) {
 	var restaurantIdNumber int
 	restaurantIdNumber, _ = strconv.Atoi(restaurantId)
 
@@ -249,10 +249,10 @@ func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetails, err
 	rows, err := db.Query(query, restaurantIdNumber)
 
 	if err != nil {
-		return []models.OrderDetails{}, err
+		return []models.OrderDetailsRequest{}, err
 	}
 
-	var orders []models.OrderDetails
+	var orders []models.OrderDetailsRequest
 
 	for rows.Next() {
 		var orderid string
@@ -260,10 +260,10 @@ func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetails, err
 		err := rows.Scan(&orderid)
 
 		if err != nil {
-			return []models.OrderDetails{}, err
+			return []models.OrderDetailsRequest{}, err
 		}
 		order = GetOrderDetails(orderid)
-		orders = append(orders, order)
+		orders = append(orders, adapters.OrderDetailsToOrderRequestMapper(order))
 	}
 
 	return orders, nil

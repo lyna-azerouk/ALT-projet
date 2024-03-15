@@ -52,7 +52,8 @@ func setUpOrderRoutes(router *gin.Engine) {
 	router.POST("/order/pick/:orderId/:code", middlewares.OrderClientAuth, handlers.VerfyOrderCode)
 	router.GET("order/user/:userId", middlewares.AuthMiddleware, handlers.GetOrdersHandler)
 	router.GET("order/restaurant/:restaurantId", middlewares.AuthMiddleware, handlers.GetRestaurantOrdersHandler)
-
+	router.PATCH("user/affluence/:restaurantId/:vote", middlewares.AuthMiddleware, handlers.UpdateAffluenceHandler)
+	router.GET("user/affluence/:restaurantId", middlewares.AuthMiddleware, handlers.GetAffluenceHandler)
 }
 
 func main() {

@@ -117,3 +117,44 @@ func GetMenusByRestaurantId(restaurantId int) []models.Menu {
 	}
 	return menus
 }
+
+func UpdateAffluence(restaurantId uint64, vote string) (int, error) {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return 0, err
+	}
+	query := requests.UpdateAffluenceRequestTemplate
+	row := db.QueryRow(query, restaurantId, vote)
+	var affluence int
+
+	err = row.Scan(&affluence)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return (0), err
+	}
+
+	return affluence, nil
+}
+
+/*
+fUNCTION THAT gets the affluence of the restaurant (low, hiengh, medium)
+*/
+func GetAffluence(restaurantId uint64) (string, error) {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return "", err
+	}
+	query := requests.GetAffluenceRequestTemplate
+	row := db.QueryRow(query, restaurantId)
+	var affluence string
+
+	err = row.Scan(&affluence)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return "", err
+	}
+
+	return affluence, nil
+}
