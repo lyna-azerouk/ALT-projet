@@ -18,5 +18,7 @@ const (
 	GetOrderCodeTemplate                                = "Select code_confirmation FROM Orders_Code WHERE order_id= $1 AND code_confirmation=$2 "
 	GetUserDetailsRequestTemplate                       = "SELECT id, first_name, last_name, email FROM BL_USER WHERE id = $1"
 	GetUserOrdersTemplate                               = "Select id From order_details where client_id= $1"
-	GetRestaurantOrdersTemplate						 = "Select id From order_details where restaurant_id= $1"
+	GetRestaurantOrdersTemplate                         = "Select id From order_details where restaurant_id= $1"
+	UpdateAffluenceRequestTemplate                      = "UPDATE Affluence_Restaurant SET nombre_de_votes = COALESCE(nombre_de_votes, 0) + 1 WHERE restaurant_id = $1 AND affluence_level = $2 RETURNING (nombre_de_votes, affluence_level);"
+	GetAffluenceRequestTemplate                         = "SELECT affluence_level FROM Affluence_Restaurant WHERE restaurant_id = $1 ORDER BY nombre_de_votes DESC LIMIT 1;"
 )
