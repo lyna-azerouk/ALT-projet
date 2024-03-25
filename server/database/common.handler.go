@@ -3,19 +3,19 @@ package database
 const PROFILE = "dev" // dev or prod
 
 const (
-	HOST_DEV     = "frost-hippo-13790.8nj.gcp-europe-west1.cockroachlabs.cloud"
+	HOST_DEV     = "sour-yak-9161.7tc.aws-eu-central-1.cockroachlabs.cloud"
 	PORT_DEV     = 26257
 	USER_DEV     = "bouffluence"
-	PASSWORD_DEV = "NKi9yHEPNbAY-_MrwE8IRw"
-	DBNAME_DEV   = "defaultdb"
+	PASSWORD_DEV = "b7kYcKKNkWPqwqYTAj6NKg"
+	DBNAME_DEV   = "bouffluence_db"
 )
 
 const (
-	HOST_PROD     = "frost-hippo-13790.8nj.gcp-europe-west1.cockroachlabs.cloud"
+	HOST_PROD     = "sour-yak-9161.7tc.aws-eu-central-1.cockroachlabs.cloud"
 	PORT_PROD     = 26257
 	USER_PROD     = "bouffluence"
-	PASSWORD_PROD = "NKi9yHEPNbAY-_MrwE8IRw"
-	DB_NAME_PROD  = "defaultdb"
+	PASSWORD_PROD = "b7kYcKKNkWPqwqYTAj6NKg"
+	DB_NAME_PROD  = "bouffluence_db"
 )
 
 func GetHost() string {

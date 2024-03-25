@@ -11,7 +11,6 @@ import (
 	"serveur/server/database"
 	"serveur/server/models"
 	services "serveur/server/services/jwt"
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt"
@@ -24,6 +23,7 @@ func ClientLoginHandler(c *gin.Context) {
 	var creds models.ClientCredentials
 
 	if err := c.BindJSON(&creds); err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
 		return
 	}
@@ -40,6 +40,7 @@ func ClientLoginHandler(c *gin.Context) {
 		creds.Email, hex.EncodeToString(hash[:]))
 
 	if err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
 	}
@@ -63,7 +64,7 @@ func ClientLoginHandler(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken, "id": strconv.FormatUint(clientClaims.Id, 10)})
+	c.JSON(http.StatusOK, gin.H{"token": signedAccessToken, "id":clientClaims.Id})
 }
 
 func actualRole(role string) string {
@@ -125,7 +126,7 @@ func buildRestaurantCredential(creds models.RestaurantCredentials) models.Restau
 	return restaurantClaims
 }
 
-func buildClientCredential(creds models.ClientCredentials, role string, id uint64) models.ClientClaims {
+func buildClientCredential(creds models.ClientCredentials, role string, id int) models.ClientClaims {
 	userClaims := models.ClientClaims{
 		Id:    id,
 		Email: creds.Email,

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"math/rand"
-	"serveur/server/adapters"
 	"serveur/server/const/requests"
 	"serveur/server/database"
 	"serveur/server/models"
@@ -120,7 +119,7 @@ func UpdateStatusOrder(id_order string, status string) models.OrderDetails {
 
 	if status == "DECLINED" {
 		delete_query1 := requests.DeleteOrderItemsRequestTemplate
-		delete_query2 := requests.DeleteOrderDetailsRequestTemplate
+		delete_query2 := ""// requests.DeleteOrderDetailsTemplate
 		_, err = db.Exec(delete_query1, id_order)
 		_, err = db.Exec(delete_query2, id_order)
 		if err != nil {
@@ -211,7 +210,7 @@ func VerfyOrderCode(id_order string, code string) (models.OrderDetails, error) {
 Function that return all the orders of a user
 */
 
-func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
+func GetUserOrdersDetails(userId string) ([]models.OrderDetails, error) {
 	var userIdNumber int
 	userIdNumber, _ = strconv.Atoi(userId)
 
@@ -220,10 +219,10 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
 	rows, err := db.Query(query, userIdNumber)
 
 	if err != nil {
-		return []models.OrderDetailsRequest{}, err
+		return []models.OrderDetails{}, err
 	}
 
-	var orders []models.OrderDetailsRequest
+	var orders []models.OrderDetails
 
 	for rows.Next() {
 		var orderid string
@@ -231,16 +230,16 @@ func GetUserOrdersDetails(userId string) ([]models.OrderDetailsRequest, error) {
 		err := rows.Scan(&orderid)
 
 		if err != nil {
-			return []models.OrderDetailsRequest{}, err
+			return []models.OrderDetails{}, err
 		}
 		order = GetOrderDetails(orderid)
-		orders = append(orders, adapters.OrderDetailsToOrderRequestMapper(order))
+		orders = append(orders, order)
 	}
 
 	return orders, nil
 }
 
-func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetailsRequest, error) {
+func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetails, error) {
 	var restaurantIdNumber int
 	restaurantIdNumber, _ = strconv.Atoi(restaurantId)
 
@@ -249,10 +248,10 @@ func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetailsReque
 	rows, err := db.Query(query, restaurantIdNumber)
 
 	if err != nil {
-		return []models.OrderDetailsRequest{}, err
+		return []models.OrderDetails{}, err
 	}
 
-	var orders []models.OrderDetailsRequest
+	var orders []models.OrderDetails
 
 	for rows.Next() {
 		var orderid string
@@ -260,10 +259,10 @@ func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetailsReque
 		err := rows.Scan(&orderid)
 
 		if err != nil {
-			return []models.OrderDetailsRequest{}, err
+			return []models.OrderDetails{}, err
 		}
 		order = GetOrderDetails(orderid)
-		orders = append(orders, adapters.OrderDetailsToOrderRequestMapper(order))
+		orders = append(orders, order)
 	}
 
 	return orders, nil

@@ -1,24 +1,29 @@
 package requests
 
+const USER_TABLE = "bl_users"
+const RESTAURANT_TABLE = "restaurants"
+const MENU_TABLE = "menus"
+const ORDER_TABLE = "order_details"
+const ORDER_ITEMS_TABLE = "order_items"
+const ORDER_CODE_TABLE = "order_code"
+
 const (
-	SelectClientByEmailAndPasswordRequestTemplate       = "SELECT id, email, user_role FROM BL_USER WHERE email = $1 AND password = $2"
-	SelectRestaurantByIdAndPasswordRequestTemplate      = "SELECT * FROM restaurant WHERE id = $1 AND password = $2"
-	SelectMenusByRestaurantIdRequestTemplate            = "SELECT * FROM menus WHERE restaurant_id = $1"
-	InsertNewClientRequestTemplate                      = ("INSERT into BL_USER (email, password, user_role, first_name, last_name) VALUES ($1, $2, $3, $4, $5) RETURNING id")
-	InsertNewOrderRequestTemplate                       = ("INSERT into order_details (client_id, restaurant_id, price, order_status, order_date) VALUES ($1, $2, $3, $4, $5) RETURNING id")
-	InsertNewOrderItemRequestTemplate                   = ("INSERT into order_items (order_id, menus_id, item_count) VALUES ($1, $2, $3)")
-	SelectMenuByIdTemplate                              = "SELECT price FROM Menus where id= $1"
-	UpdateStatusOrderRequestTemplate                    = "UPDATE order_details SET order_status = $1 WHERE id = $2;"
-	GetOrderRequestTemplate                             = "Select * from order_details where id = $1"
-	GetOrderItemsRequestTemplate                        = "Select menus_id, item_count FROM order_items where order_id =$1"
-	DeleteOrderItemsRequestTemplate                     = "DELETE FROM order_items WHERE order_id = $1;"
-	DeleteOrderDetailsRequestTemplate                   = "DELETE FROM order_details WHERE id = $1"
-	SelectRestaurantOrderAverageDurationRequestTemplate = "SELECT order_average_duration FROM restaurant WHERE id = $1"
-	InsertCodeRequestTemplate                           = "INSERT into Orders_Code (order_id, code_confirmation) VALUES ($1, $2)"
-	GetOrderCodeTemplate                                = "Select code_confirmation FROM Orders_Code WHERE order_id= $1 AND code_confirmation=$2 "
-	GetUserDetailsRequestTemplate                       = "SELECT id, first_name, last_name, email FROM BL_USER WHERE id = $1"
-	GetUserOrdersTemplate                               = "Select id From order_details where client_id= $1"
-	GetRestaurantOrdersTemplate                         = "Select id From order_details where restaurant_id= $1"
-	UpdateAffluenceRequestTemplate                      = "UPDATE Affluence_Restaurant SET nombre_de_votes = COALESCE(nombre_de_votes, 0) + 1 WHERE restaurant_id = $1 AND affluence_level = $2 RETURNING (nombre_de_votes, affluence_level);"
-	GetAffluenceRequestTemplate                         = "SELECT affluence_level FROM Affluence_Restaurant WHERE restaurant_id = $1 ORDER BY nombre_de_votes DESC LIMIT 1;"
+	SelectClientByEmailAndPasswordRequestTemplate       = "SELECT id, email, user_role FROM " + USER_TABLE + " WHERE email = $1 AND password = $2"
+	SelectRestaurantByIdAndPasswordRequestTemplate      = "SELECT * FROM " + RESTAURANT_TABLE + " WHERE id = $1 AND password = $2"
+	SelectMenusByRestaurantIdRequestTemplate            = "SELECT * FROM " + MENU_TABLE + " WHERE restaurant_id = $1"
+	InsertNewClientRequestTemplate                      = ("INSERT into " + USER_TABLE + " (email, password, user_role, last_name, first_name) VALUES ($1, $2, $3, $4, $5)")
+	InsertNewOrderRequestTemplate                       = ("INSERT into " + ORDER_TABLE + " (client_id, restaurant_id, price, order_status, order_date) VALUES ($1, $2, $3, $4, $5) RETURNING id")
+	InsertNewOrderItemRequestTemplate                   = ("INSERT into " + ORDER_ITEMS_TABLE + " (order_id, menus_id, item_count) VALUES ($1, $2, $3)")
+	SelectMenuByIdTemplate                              = "SELECT price FROM " + MENU_TABLE + " where id= $1"
+	UpdateStatusOrderRequestTemplate                    = "UPDATE " + ORDER_TABLE + " SET order_status = $1 WHERE id = $2;"
+	GetOrderRequestTemplate                             = "Select * from " + ORDER_TABLE + " where id = $1"
+	GetOrderItemsRequestTemplate                        = "Select menus_id, item_count FROM " + ORDER_ITEMS_TABLE + " where order_id =$1"
+	DeleteOrderItemsRequestTemplate                     = "DELETE FROM " + ORDER_ITEMS_TABLE + " WHERE order_id = $1;"
+	DeleteOrderDetailsRequestTemplate                   = "DELETE FROM " + ORDER_TABLE + " WHERE id = $1"
+	SelectRestaurantOrderAverageDurationRequestTemplate = "SELECT order_average_duration FROM " + RESTAURANT_TABLE + " WHERE id = $1"
+	InsertCodeRequestTemplate                           = "INSERT into " + ORDER_CODE_TABLE + " (order_id, code_confirmation) VALUES ($1, $2)"
+	GetOrderCodeTemplate                                = "Select code_confirmation FROM " + ORDER_CODE_TABLE + " WHERE order_id= $1 AND code_confirmation=$2 "
+	GetUserDetailsRequestTemplate                       = "SELECT id, first_name, last_name, email FROM " + USER_TABLE + " WHERE id = $1"
+	GetUserOrdersTemplate                               = "Select id From " + ORDER_TABLE + " where client_id= $1"
+	GetRestaurantOrdersTemplate                         = "Select * From " + ORDER_TABLE + " where restaurant_id= $1"
 )

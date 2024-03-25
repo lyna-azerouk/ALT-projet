@@ -124,7 +124,7 @@ func UpdateAffluence(restaurantId uint64, vote string) (int, error) {
 		fmt.Println("Error:", err)
 		return 0, err
 	}
-	query := requests.UpdateAffluenceRequestTemplate
+	query := "" //requests.UpdateAffluenceRequestTemplate
 	row := db.QueryRow(query, restaurantId, vote)
 	var affluence int
 
@@ -146,7 +146,7 @@ func GetAffluence(restaurantId uint64) (string, error) {
 		fmt.Println("Error:", err)
 		return "", err
 	}
-	query := requests.GetAffluenceRequestTemplate
+	query := "" // TODO
 	row := db.QueryRow(query, restaurantId)
 	var affluence string
 

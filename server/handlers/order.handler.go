@@ -1,8 +1,8 @@
 package handlers
 
 import (
+	"log"
 	"net/http"
-	"serveur/server/adapters"
 	"serveur/server/models"
 	"serveur/server/services"
 
@@ -16,17 +16,19 @@ func InitOrderHandler(c *gin.Context) {
 	var orderRequest models.OrderDetails
 
 	if err := c.BindJSON(&orderRequest); err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid order request"})
 		return
 	}
 
 	order, err := services.CreateNewOrder(orderRequest)
 	if err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Failed to create order"})
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{"body": adapters.OrderDetailsToOrderRequestMapper(order)})
+	c.JSON(http.StatusOK, gin.H{"body": order})
 }
 
 /*

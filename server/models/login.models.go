@@ -12,7 +12,7 @@ type ClientCredentials struct {
 }
 
 type RestaurantCredentials struct {
-	Id       uint64 `json:"id"`
+	Id       int `json:"id"`
 	Password string `json:"password"`
 }
 
@@ -23,12 +23,12 @@ type Response struct {
 
 type ClientClaims struct {
 	Email string `json:"email"`
-	Id    uint64 `json:"id"`
+	Id    int `json:"id"`
 	Role  string `json:"role"`
 	jwt.StandardClaims
 }
 
 type RestaurantClaims struct {
-	Id uint64 `json:"id"`
+	Id int `json:"id"`
 	jwt.StandardClaims
 }
