@@ -3,7 +3,7 @@ package handlers
 import (
 	"net/http"
 	"serveur/server/services"
-
+	"log"
 	"github.com/gin-gonic/gin"
 )
 
@@ -32,6 +32,7 @@ func GetRestaurantOrdersHandler(c *gin.Context) {
 	orders, err := services.GetRestaurantOrdersDetails(restaurantId)
 
 	if err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Failed to get restaurant Orders"})
 	}
 	c.JSON(http.StatusOK, gin.H{"Restaurant orders": orders})

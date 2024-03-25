@@ -1,7 +1,7 @@
 package requests
 
 const USER_TABLE = "bl_users"
-const RESTAURANT_TABLE = "restaurants"
+const RESTAURANT_TABLE = "restaurant"
 const MENU_TABLE = "menus"
 const ORDER_TABLE = "order_details"
 const ORDER_ITEMS_TABLE = "order_items"
@@ -25,5 +25,5 @@ const (
 	GetOrderCodeTemplate                                = "Select code_confirmation FROM " + ORDER_CODE_TABLE + " WHERE order_id= $1 AND code_confirmation=$2 "
 	GetUserDetailsRequestTemplate                       = "SELECT id, first_name, last_name, email FROM " + USER_TABLE + " WHERE id = $1"
 	GetUserOrdersTemplate                               = "Select id From " + ORDER_TABLE + " where client_id= $1"
-	GetRestaurantOrdersTemplate                         = "Select * From " + ORDER_TABLE + " where restaurant_id= $1"
+	GetRestaurantOrdersTemplate                         = "Select id From " + ORDER_TABLE + " where restaurant_id= $1"
 )

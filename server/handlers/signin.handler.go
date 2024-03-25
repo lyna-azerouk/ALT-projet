@@ -80,7 +80,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 	var creds models.RestaurantCredentials
 
 	if err := c.BindJSON(&creds); err != nil {
-		fmt.Println(err)
+		fmt.Println(err.Error())
 		c.JSON(http.StatusBadRequest, gin.H{"success": 0, "message": "Invalid request"})
 		return
 	}
@@ -98,6 +98,7 @@ func RestaurantLoginHandler(c *gin.Context) {
 		creds.Id, hex.EncodeToString(hash[:]))
 
 	if err != nil {
+		log.Println(err.Error())
 		c.JSON(http.StatusUnauthorized, gin.H{"success": 0, "message": "Invalid credentials"})
 		return
 	}

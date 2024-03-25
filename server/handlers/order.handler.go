@@ -42,6 +42,15 @@ func UpdatePendingOrderHandler(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{"message": "Order in progress", "order": order})
 }
 
+func UpdateInProgressOrderHandler(c *gin.Context) {
+	var id_order = c.Param("orderId")
+
+	order := services.UpdateStatusOrder(id_order, "READY")
+
+	c.JSON(http.StatusOK, gin.H{"message": "Order Ready", "order": order})
+
+}
+
 /*
 Update status Order to DECLINED and delte the  order from database
 */
