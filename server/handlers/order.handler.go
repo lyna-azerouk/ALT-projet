@@ -52,7 +52,7 @@ func UpdateInProgressOrderHandler(c *gin.Context) {
 }
 
 /*
-Update status Order to DECLINED and delte the  order from database
+Update status Order to DECLINED and delete the order from database
 */
 func UpdatDeleteOrderHandler(c *gin.Context) {
 	var id_order = c.Param("orderId")

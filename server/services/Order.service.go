@@ -101,10 +101,7 @@ func GetOrderDetails(id_order string) models.OrderDetails {
 	return order
 }
 
-/*
-*
-Update the status of the order from Pending to In-Progress
-*/
+/* Update the status of the order from Pending to In-Progress*/
 func UpdateStatusOrder(id_order string, status string) models.OrderDetails {
 	db, _ := database.ConnectDB()
 
@@ -119,7 +116,7 @@ func UpdateStatusOrder(id_order string, status string) models.OrderDetails {
 
 	if status == "DECLINED" {
 		delete_query1 := requests.DeleteOrderItemsRequestTemplate
-		delete_query2 := ""// requests.DeleteOrderDetailsTemplate
+		delete_query2 := "" // requests.DeleteOrderDetailsTemplate
 		_, err = db.Exec(delete_query1, id_order)
 		_, err = db.Exec(delete_query2, id_order)
 		if err != nil {
@@ -244,26 +241,61 @@ func GetRestaurantOrdersDetails(restaurantId string) ([]models.OrderDetails, err
 	restaurantIdNumber, _ = strconv.Atoi(restaurantId)
 
 	db, _ := database.ConnectDB()
-	query := requests.GetRestaurantOrdersTemplate
+	query := requests.GetRestaurantOrdersDetailsTemplate
 	rows, err := db.Query(query, restaurantIdNumber)
-
 	if err != nil {
+		log.Printf("Error while getting restaurant orders: %s", err.Error())
 		return []models.OrderDetails{}, err
 	}
 
-	var orders []models.OrderDetails
-
+	var ordersMap = make(map[int]*models.OrderDetails)
 	for rows.Next() {
-		var orderid string
-		var order models.OrderDetails
-		err := rows.Scan(&orderid)
+		var orderId, clientId, restaurantId int
+		var status, date string
+		var price float64
+		var menuId int
+		var count int
 
+		err := rows.Scan(&orderId, &clientId, &restaurantId, &status, &price, &date, &menuId, &count)
 		if err != nil {
-			return []models.OrderDetails{}, err
+			fmt.Println("Erreur lors de la lecture de la ligne:", err)
+			ordersMap[orderId] = &models.OrderDetails{
+				Id:           orderId,
+				ClientId:     clientId,
+				RestaurantId: restaurantId,
+				Status:       status,
+				Price:        price,
+				Date:         date,
+			}
+			continue
 		}
-		order = GetOrderDetails(orderid)
-		orders = append(orders, order)
+
+		// On recupere la commande pour y ajouter l'article
+		order, ok := ordersMap[orderId]
+		if !ok {
+			// Si la commande n'existe pas encore, la créer
+			order = &models.OrderDetails{
+				Id:           orderId,
+				ClientId:     clientId,
+				RestaurantId: restaurantId,
+				Status:       status,
+				Price:        price,
+				Date:         date,
+			}
+			// Ajouter la commande à la carte
+			ordersMap[orderId] = order
+		}
+		// Ajouter l'élément de commande à la commande actuelle
+		order.OrderItems = append(order.OrderItems, models.OrderItem{
+			MenuId: menuId,
+			Count:  count,
+		})
 	}
 
+	// convertir la carte en tableau
+	var orders []models.OrderDetails
+	for _, order := range ordersMap {
+		orders = append(orders, *order)
+	}
 	return orders, nil
 }

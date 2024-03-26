@@ -26,4 +26,5 @@ const (
 	GetUserDetailsRequestTemplate                       = "SELECT id, first_name, last_name, email FROM " + USER_TABLE + " WHERE id = $1"
 	GetUserOrdersTemplate                               = "Select id From " + ORDER_TABLE + " where client_id= $1"
 	GetRestaurantOrdersTemplate                         = "Select id From " + ORDER_TABLE + " where restaurant_id= $1"
+	GetRestaurantOrdersDetailsTemplate                  = "SELECT OD.id, OD.client_id, OD.restaurant_id, OD.order_status, OD.price, OD.order_date, OI.menus_id, OI.item_count FROM " + ORDER_TABLE + " OD LEFT JOIN " + ORDER_ITEMS_TABLE + " OI ON OI.order_id = OD.id WHERE OD.restaurant_id=$1"
 )

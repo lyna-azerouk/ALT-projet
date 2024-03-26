@@ -11,11 +11,9 @@ type OrderDetails struct {
 	Date         string      `json:"date"`
 }
 
-
 type OrderItem struct {
-	MenuId uint64 `json:"menuId"`
-	Count  int    `json:"count"`
+	MenuId int `json:"menuId"`
+	Count  int `json:"count"`
 }
-
 
 // order response: en fonction des besoins du client ????

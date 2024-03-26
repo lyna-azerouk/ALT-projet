@@ -24,7 +24,15 @@ func SetUpRouter() *gin.Engine {
 	setUpOrderRoutes(router)
 
 	setUpUserRoutes(router)
+
+	setUpAffluenceRoutes(router)
+
 	return router
+}
+
+func setUpAffluenceRoutes(router *gin.Engine) {
+	router.PATCH("user/affluence/:restaurantId/:vote", middlewares.AuthMiddleware, handlers.UpdateAffluenceHandler)
+	router.GET("user/affluence/:restaurantId", middlewares.AuthMiddleware, handlers.GetAffluenceHandler)
 }
 
 func setUpUserRoutes(router *gin.Engine) {
@@ -53,8 +61,6 @@ func setUpOrderRoutes(router *gin.Engine) {
 	router.POST("/order/pick/:orderId/:code", middlewares.VerifyOrderMiddleware, handlers.VerfyOrderCode)
 	router.GET("order/user/:userId", middlewares.AuthMiddleware, handlers.GetOrdersHandler)
 	router.GET("order/restaurant/:restaurantId", middlewares.AuthMiddleware, handlers.GetRestaurantOrdersHandler)
-	router.PATCH("user/affluence/:restaurantId/:vote", middlewares.AuthMiddleware, handlers.UpdateAffluenceHandler)
-	router.GET("user/affluence/:restaurantId", middlewares.AuthMiddleware, handlers.GetAffluenceHandler)
 }
 
 func main() {
