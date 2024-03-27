@@ -23,7 +23,7 @@ func RestaurantDetailsHandler(c *gin.Context) {
 /*
 Function that update the  affluence of the restaurant according to votes
 */
-func UpdateAffluenceHandler(c *gin.Context) {
+func UpdateAffluenceWithUserVoteHandler(c *gin.Context) {
 	var restaurantId = c.Param("restaurantId")
 	var vote = c.Param("vote")
 
@@ -40,6 +40,26 @@ func UpdateAffluenceHandler(c *gin.Context) {
 		return
 	}
 	c.JSON(200, gin.H{"Affluence": affluence})
+}
+
+func UpdateAffluenceWithRestaurantVoteHandler(c *gin.Context) {
+	var restaurantId = c.Param("restaurantId")
+	var vote = c.Param("level")
+
+	restaurantID, err := strconv.Atoi(restaurantId)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid restaurant id"})
+		return
+	}
+	affluence, err := services.UpdateAffluenceForRestaurantVote(restaurantID, vote)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid  Request"})
+		return
+	}
+	c.JSON(200, gin.H{"Affluence": affluence})
+
 }
 
 /*

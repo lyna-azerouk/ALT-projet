@@ -137,6 +137,26 @@ func UpdateAffluence(restaurantId uint64, vote string) (int, error) {
 	return affluence, nil
 }
 
+func UpdateAffluenceForRestaurantVote(restaurantId int, vote string) (string, error) {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return "", err
+	}
+	query := requests.UpdateAffluenceForRestaurantVoteRequestTemplate
+	row := db.QueryRow(query, vote, restaurantId)
+	var affluence string
+
+	err = row.Scan(&affluence)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return "", err
+	}
+
+	return affluence, nil
+
+}
+
 /*
 fUNCTION THAT gets the affluence of the restaurant (low, hiengh, medium)
 */
@@ -146,7 +166,7 @@ func GetAffluence(restaurantId uint64) (string, error) {
 		fmt.Println("Error:", err)
 		return "", err
 	}
-	query := "" // TODO
+	query := requests.SelectAffluenceRequestTemplate
 	row := db.QueryRow(query, restaurantId)
 	var affluence string
 
