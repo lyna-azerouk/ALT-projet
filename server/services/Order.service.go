@@ -2,6 +2,7 @@ package services
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"log"
 	"math/rand"
@@ -187,14 +188,31 @@ func VerfyOrderCode(id_order string, code string) (models.OrderDetails, error) {
 	db, _ := database.ConnectDB()
 
 	query := requests.GetOrderCodeTemplate
-	num_order, _ := strconv.Atoi(id_order)
-	num_code, _ := strconv.Atoi(code)
-	row, err := db.Exec(query, num_order, num_code)
-	fmt.Println(row)
+	num_order, err := strconv.Atoi(id_order)
+	if err != nil {
+		fmt.Println(err)
+		return models.OrderDetails{}, err
+	}
+
+	num_code, err := strconv.Atoi(code)
+
+	if err != nil {
+		fmt.Println(err)
+		return models.OrderDetails{}, err
+	}
+
+	row, err := db.Query(query, num_order, num_code)
 
 	if err != nil {
 		fmt.Println(err)
 		log.Fatal("error with the database")
+		return models.OrderDetails{}, err
+	}
+
+	if !row.Next() {
+		errorMsg := "Invalid code provided or order not found"
+		log.Println(errorMsg)
+		err = errors.New(errorMsg)
 		return models.OrderDetails{}, err
 	}
 

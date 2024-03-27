@@ -83,6 +83,7 @@ func PickOrder(c *gin.Context) {
 	code, err := services.GenerateCode(id_order)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Failed to generate a code"})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{"Code": code})
 
@@ -98,7 +99,8 @@ func VerfyOrderCode(c *gin.Context) {
 	order, err := services.VerfyOrderCode(id_order, code)
 
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": "Incorrect code"})
+		c.JSON(http.StatusInternalServerError, gin.H{"success": 0, "message": err.Error()})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{"Code": order})
