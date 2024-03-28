@@ -6,6 +6,7 @@ const MENU_TABLE = "menus"
 const ORDER_TABLE = "order_details"
 const ORDER_ITEMS_TABLE = "order_items"
 const ORDER_CODE_TABLE = "order_code"
+const AFFLUENCE_VOTE_TABLE = "avis_affluence"
 
 const (
 	SelectClientByEmailAndPasswordRequestTemplate       = "SELECT id, email, user_role FROM " + USER_TABLE + " WHERE email = $1 AND password = $2"
@@ -28,5 +29,7 @@ const (
 	GetRestaurantOrdersTemplate                         = "Select id From " + ORDER_TABLE + " where restaurant_id= $1"
 	GetRestaurantOrdersDetailsTemplate                  = "SELECT OD.id, OD.client_id, OD.restaurant_id, OD.order_status, OD.price, OD.order_date, OI.menus_id, OI.item_count FROM " + ORDER_TABLE + " OD LEFT JOIN " + ORDER_ITEMS_TABLE + " OI ON OI.order_id = OD.id WHERE OD.restaurant_id=$1"
 	UpdateAffluenceForRestaurantVoteRequestTemplate     = "UPDATE " + RESTAURANT_TABLE + " SET affluence = $1 WHERE id = $2 RETURNING affluence"
-	SelectAffluenceRequestTemplate                      = "SELECT affluence FROM " + RESTAURANT_TABLE + " WHERE id = $1"
+	SelectAffluenceSubmitedByRestaurantRequestTemplate  = "SELECT affluence FROM " + RESTAURANT_TABLE + " WHERE id = $1"
+	SubmitVoteForRestaurantAffluenceRequestTemplate     = "UPDATE " + AFFLUENCE_VOTE_TABLE + " SET vote = vote + 1 WHERE restaurant_id = $1 AND affluence_level = $2 RETURNING vote"
+	SelectAffluenceSubmitedByClientsRequestTemplate     = "SELECT affluence_level, vote FROM " + AFFLUENCE_VOTE_TABLE + " WHERE restaurant_id = $1"
 )

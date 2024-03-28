@@ -35,7 +35,7 @@ func setUpAffluenceRoutes(router *gin.Engine) {
 	router.GET("affluence/:restaurantId", middlewares.AuthMiddleware, handlers.GetAffluenceHandler)
 
 	// updating affluences info
-	router.PATCH("user/affluence/:restaurantId/:level", middlewares.AuthMiddleware, handlers.UpdateAffluenceWithUserVoteHandler)
+	router.PATCH("client/affluence/:restaurantId/:level", middlewares.AuthMiddleware, handlers.UpdateAffluenceWithClientVoteHandler)
 	router.PATCH("restaurant/affluence/:restaurantId/:level", middlewares.AuthRestaurant, handlers.UpdateAffluenceWithRestaurantVoteHandler)
 }
 
