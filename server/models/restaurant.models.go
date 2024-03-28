@@ -37,3 +37,10 @@ type Menu struct {
 	Description  sql.NullString `json:"description"`
 	Image        sql.NullString `json:"url"`
 }
+
+type RestaurantDetails struct {
+	Id                   int    `json:"id"`
+	Name                 string `json:"name"`
+	Affluence            string `json:"affluence"`
+	OrderAverageDuration int    `json:"order_average_duration"`
+}

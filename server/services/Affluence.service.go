@@ -87,3 +87,28 @@ func SubmitClientVoteForAffluence(restaurantId uint64, vote string) (int, error)
 
 	return affluence, nil
 }
+
+func ResetAffluence(restaurantId int) error {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+	query := requests.InitAffluenceForRestaurantRequestTemplate
+	_, err = db.Exec(query, restaurantId, "LOW", 0)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+	_, err = db.Exec(query, restaurantId, "MEDIUM", 0)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+	_, err = db.Exec(query, restaurantId, "HIGH", 0)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+	return nil
+}

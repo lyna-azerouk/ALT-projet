@@ -8,6 +8,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+
+func AllBouffluenceRestaurantsHandler(c *gin.Context) {
+	restaurants := services.AllBouffluenceRestaurants()
+	c.JSON(http.StatusOK, gin.H{"restaurants": restaurants})
+}
+
+/** Get restauran from tiers API */
 func RestaurantsHandler(c *gin.Context) {
 	radius, latitude, longitude, notDone := parseCoordinates(c)
 	if notDone {

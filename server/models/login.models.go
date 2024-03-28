@@ -12,8 +12,9 @@ type ClientCredentials struct {
 }
 
 type RestaurantCredentials struct {
-	Id       int `json:"id"`
+	Id       int    `json:"id"`
 	Password string `json:"password"`
+	Name     string `json:"name"`
 }
 
 type Response struct {
@@ -23,7 +24,7 @@ type Response struct {
 
 type ClientClaims struct {
 	Email string `json:"email"`
-	Id    int `json:"id"`
+	Id    int    `json:"id"`
 	Role  string `json:"role"`
 	jwt.StandardClaims
 }

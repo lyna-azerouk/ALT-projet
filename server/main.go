@@ -45,11 +45,15 @@ func setUpUserRoutes(router *gin.Engine) {
 
 func setUpRestaurantRoutes(router *gin.Engine) {
 	router.GET("/restaurants/:long/:lal/:radius", middlewares.AuthMiddleware, handlers.RestaurantsHandler)
+	router.GET("/bouffluence/restaurants/", middlewares.AuthMiddleware, handlers.AllBouffluenceRestaurantsHandler)
 	router.GET("/restaurant/:restaurantId", middlewares.AuthMiddleware, handlers.RestaurantDetailsHandler)
+
+	router.POST("/restaurant/menu/:restaurantId/", middlewares.AuthRestaurant, handlers.AddMenuItemHandler)
 }
 
 func setUpAuthRoutes(router *gin.Engine) {
-	router.POST("/signup/client", handlers.RegistrationHandler)
+	router.POST("/signup/client", handlers.ClientRegistrationHandler)
+	router.POST("/signup/restaurant", handlers.RestaurantRegistrationHandler)
 	router.POST("/auth/client", handlers.ClientLoginHandler)
 	router.POST("/auth/restaurant", handlers.RestaurantLoginHandler)
 }

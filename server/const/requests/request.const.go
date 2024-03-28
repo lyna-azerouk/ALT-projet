@@ -13,6 +13,7 @@ const (
 	SelectRestaurantByIdAndPasswordRequestTemplate      = "SELECT * FROM " + RESTAURANT_TABLE + " WHERE id = $1 AND password = $2"
 	SelectMenusByRestaurantIdRequestTemplate            = "SELECT * FROM " + MENU_TABLE + " WHERE restaurant_id = $1"
 	InsertNewClientRequestTemplate                      = ("INSERT into " + USER_TABLE + " (email, password, user_role, last_name, first_name) VALUES ($1, $2, $3, $4, $5)")
+	InsertNewRestaurantRequestTemplate                  = ("INSERT into " + RESTAURANT_TABLE + " (id, name, password, affluence, order_average_duration) VALUES ($1, $2, $3, $4, $5) RETURNING id")
 	InsertNewOrderRequestTemplate                       = ("INSERT into " + ORDER_TABLE + " (client_id, restaurant_id, price, order_status, order_date) VALUES ($1, $2, $3, $4, $5) RETURNING id")
 	InsertNewOrderItemRequestTemplate                   = ("INSERT into " + ORDER_ITEMS_TABLE + " (order_id, menus_id, item_count) VALUES ($1, $2, $3)")
 	SelectMenuByIdTemplate                              = "SELECT price FROM " + MENU_TABLE + " where id= $1"
@@ -32,4 +33,7 @@ const (
 	SelectAffluenceSubmitedByRestaurantRequestTemplate  = "SELECT affluence FROM " + RESTAURANT_TABLE + " WHERE id = $1"
 	SubmitVoteForRestaurantAffluenceRequestTemplate     = "UPDATE " + AFFLUENCE_VOTE_TABLE + " SET vote = vote + 1 WHERE restaurant_id = $1 AND affluence_level = $2 RETURNING vote"
 	SelectAffluenceSubmitedByClientsRequestTemplate     = "SELECT affluence_level, vote FROM " + AFFLUENCE_VOTE_TABLE + " WHERE restaurant_id = $1"
+	InsertMenuItemRequestTemplate                       = "INSERT into " + MENU_TABLE + " (restaurant_id, name, price, description, image) VALUES ($1, $2, $3, $4, $5) RETURNING id"
+	SelectAllBouffluenceRestaurantsRequestTemplate      = "SELECT id, name, affluence, order_average_duration FROM " + RESTAURANT_TABLE
+	InitAffluenceForRestaurantRequestTemplate = "INSERT INTO " + AFFLUENCE_VOTE_TABLE + " (restaurant_id, affluence_level, vote, last_cleanup) VALUES ($1, $2, $3, TIMESTAMP 'now') RETURNING vote"
 )

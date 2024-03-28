@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"serveur/server/models"
 	"serveur/server/services"
 	"strconv"
 
@@ -82,4 +83,30 @@ func GetAffluenceHandler(c *gin.Context) {
 	}
 
 	c.JSON(200, gin.H{"Affluence": affluence_level})
+}
+
+/**Add a new menu item for a restaurant*/
+func AddMenuItemHandler(c *gin.Context) {
+	var restaurantId string = c.Param("restaurantId")
+
+	var menuItem models.MenuItem
+	if err := c.BindJSON(&menuItem); err != nil {
+		c.JSON(400, gin.H{"message": "Invalid request"})
+		return
+	}
+
+	restaurantID, err := strconv.Atoi(restaurantId)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Invalid restaurant id"})
+		return
+	}
+
+	err = services.AddMenuItem(restaurantID, menuItem)
+
+	if err != nil {
+		c.JSON(400, gin.H{"message": "Menu item could not be added"})
+		return
+	}
+	c.JSON(200, gin.H{"message": "menu item added successfully"})
 }

@@ -13,6 +13,33 @@ import (
 
 const URL_TEMPLATE = "https://overpass-api.de/api/interpreter?data=%s"
 
+func AllBouffluenceRestaurants() []models.RestaurantDetails {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil
+	}
+	query := requests.SelectAllBouffluenceRestaurantsRequestTemplate
+	rows, err := db.Query(query)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return nil
+	}
+
+	var restaurants []models.RestaurantDetails
+	for rows.Next() {
+		var restaurant models.RestaurantDetails
+		err := rows.Scan(&restaurant.Id, &restaurant.Name, &restaurant.Affluence, &restaurant.OrderAverageDuration)
+		if err != nil {
+			fmt.Println("Error:", err)
+			return nil
+		}
+		restaurants = append(restaurants, restaurant)
+	}
+
+	return restaurants
+}
+
 /* RestaurantsAround return the list of restaurant around the given longitute and latitude
  * @param lon float64
  * @param lat float64
@@ -31,7 +58,6 @@ func RestaurantsAround(lon float64, lat float64, radius float64) []models.OverPa
 	}
 	defer response.Body.Close()
 	body, err := io.ReadAll(response.Body)
-	println(string(body))
 	if err != nil {
 		fmt.Println("Error:", err)
 		return nil
@@ -116,4 +142,19 @@ func GetMenusByRestaurantId(restaurantId int) []models.Menu {
 		menus = append(menus, menu)
 	}
 	return menus
+}
+
+func AddMenuItem(restaurantId int, menuItem models.MenuItem) error {
+	db, err := database.ConnectDB()
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+	query := requests.InsertMenuItemRequestTemplate
+	_, err = db.Exec(query, restaurantId, menuItem.Name, menuItem.Price, menuItem.Description, menuItem.Image)
+	if err != nil {
+		fmt.Println("Error:", err)
+		return err
+	}
+	return nil
 }
