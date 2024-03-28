@@ -1,0 +1,226 @@
+{
+    "menus": [
+        {
+            "id": 1,
+            "name": "Pizza Margherita",
+            "timestamp": 1632000000,
+            "price": 10.50,
+            "ingredients": [
+                "Sauce tomate",
+                "Mozzarella",
+                "Basilic frais"
+            ],
+            "image_url": "https://example.com/pizza_margherita.jpg"
+        },
+        {
+            "id": 2,
+            "name": "Riz frit aux légumes",
+            "timestamp": 1632086400,
+            "price": 8.75,
+            "ingredients": [
+                "Riz cuit",
+                "Carottes",
+                "Petits pois",
+                "Oignons",
+                "Œufs",
+                "Sauce soja"
+            ],
+            "image_url": "https://example.com/riz_frit.jpg"
+        },
+        {
+            "id": 3,
+            "name": "Salade de quinoa aux agrumes",
+            "timestamp": 1632172800,
+            "price": 12.00,
+            "ingredients": [
+                "Quinoa cuit",
+                "Orange",
+                "Pamplemousse",
+                "Menthe fraîche",
+                "Vinaigrette à l'orange"
+            ],
+            "image_url": "https://example.com/salade_quinoa.jpg"
+        },
+        {
+            "id": 4,
+            "name": "Pâtes Alfredo aux crevettes",
+            "timestamp": 1632259200,
+            "price": 14.25,
+            "ingredients": [
+                "Fettuccine",
+                "Crevettes",
+                "Crème fraîche",
+                "Parmesan râpé",
+                "Ail",
+                "Persil"
+            ],
+            "image_url": "https://example.com/pates_alfredo.jpg"
+        },
+        {
+            "id": 5,
+            "name": "Tacos au poisson",
+            "timestamp": 1632345600,
+            "price": 11.50,
+            "ingredients": [
+                "Filet de poisson",
+                "Tortillas",
+                "Chou rouge",
+                "Salsa",
+                "Crème sure"
+            ],
+            "image_url": "https://example.com/tacos_poisson.jpg"
+        },
+        {
+            "id": 6,
+            "name": "Curry de poulet thaï",
+            "timestamp": 1632432000,
+            "price": 13.75,
+            "ingredients": [
+                "Poulet",
+                "Lait de coco",
+                "Pâte de curry rouge",
+                "Poivrons",
+                "Aubergine",
+                "Basilic thaï"
+            ],
+            "image_url": "https://example.com/curry_poulet.jpg"
+        },
+        {
+            "id": 7,
+            "name": "Burger végétarien",
+            "timestamp": 1632518400,
+            "price": 10.00,
+            "ingredients": [
+                "Pain burger",
+                "Pois chiches",
+                "Avoine",
+                "Épinards",
+                "Tomate",
+                "Houmous"
+            ],
+            "image_url": "https://example.com/burger_vegetarien.jpg"
+        },
+        {
+            "id": 8,
+            "name": "Gâteau aux carottes",
+            "timestamp": 1632604800,
+            "price": 9.50,
+            "ingredients": [
+                "Carottes râpées",
+                "Farine",
+                "Œufs",
+                "Noix",
+                "Cannelle",
+                "Crème au fromage"
+            ],
+            "image_url": "https://example.com/gateau_carottes.jpg"
+        },
+        {
+            "id": 9,
+            "name": "Ratatouille provençale",
+            "timestamp": 1632691200,
+            "price": 11.25,
+            "ingredients": [
+                "Aubergine",
+                "Courgette",
+                "Poivron",
+                "Tomate",
+                "Oignon",
+                "Ail",
+                "Herbes de Provence"
+            ],
+            "image_url": "https://example.com/ratatouille_provencale.jpg"
+        },
+        {
+            "id": 10,
+            "name": "Sushi assorti",
+            "timestamp": 1632777600,
+            "price": 16.00,
+            "ingredients": [
+                "Riz à sushi",
+                "Saumon",
+                "Thon",
+                "Avocat",
+                "Concombre",
+                "Algues nori",
+                "Wasabi",
+                "Sauce soja"
+            ],
+            "image_url": "https://example.com/sushi_assorti.jpg"
+        },
+        {
+            "id": 11,
+            "name": "Poulet rôti aux herbes",
+            "timestamp": 1632864000,
+            "price": 13.00,
+            "ingredients": [
+                "Poulet entier",
+                "Herbes fraîches",
+                "Ail",
+                "Beurre",
+                "Citron"
+            ],
+            "image_url": "https://example.com/poulet_roti.jpg"
+        },
+        {
+            "id": 12,
+            "name": "Salade niçoise",
+            "timestamp": 1632950400,
+            "price": 12.50,
+            "ingredients": [
+                "Thon en conserve",
+                "Haricots verts",
+                "Œufs durs",
+                "Tomates",
+                "Olives noires",
+                "Anchois",
+                "Vinaigrette"
+            ],
+            "image_url": "https://example.com/salade_nicoise.jpg"
+        },
+        {
+            "id": 13,
+            "name": "Soupe de lentilles",
+            "timestamp": 1633036800,
+            "price": 8.00,
+            "ingredients": [
+                "Lentilles",
+                "Carottes",
+                "Céleri",
+                "Oignon",
+                "Ail",
+                "Bouillon de légumes"
+            ],
+            "image_url": "https://example.com/soupe_lentilles.jpg"
+        },
+        {
+            "id": 14,
+            "name": "Tarte aux pommes",
+            "timestamp": 1633123200,
+            "price": 10.75,
+            "ingredients": [
+                "Pâte brisée",
+                "Pommes",
+                "Sucre",
+                "Cannelle",
+                "Beurre"
+            ],
+            "image_url": "https://example.com/tarte_pommes.jpg"
+        },
+        {
+            "id": 15,
+            "name": "Pâtes primavera",
+            "timestamp": 1633209600,
+            "price": 11.25,
+            "ingredients": [
+                "Pâtes",
+                "Courgette",
+                "Asperges",
+                "Tomates cerises",
+                "Basilic",
+                "Parmesan"
+            ],
+            "image_url": "https://example.com/pates_primavera.jpg"
+        }
+    ]
+}
