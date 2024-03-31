@@ -134,11 +134,13 @@ func GetMenusByRestaurantId(restaurantId int) []models.Menu {
 	var menus []models.Menu
 	for rows.Next() {
 		var menu models.Menu
-		err := rows.Scan(&menu.Id, &menu.Name, &menu.Price, &menu.RestaurantID, &menu.Description, &menu.Image)
+		var price []uint8
+		err := rows.Scan(&menu.Id, &menu.Name, &menu.RestaurantID, &price, &menu.Description, &menu.Image)
 		if err != nil {
 			fmt.Println("Error:", err)
 			return nil
 		}
+		menu.Price = float64(price[0])
 		menus = append(menus, menu)
 	}
 	return menus

@@ -59,13 +59,21 @@ func setUpAuthRoutes(router *gin.Engine) {
 }
 
 func setUpOrderRoutes(router *gin.Engine) {
+	// cree une commande
 	router.POST("/order", middlewares.AuthMiddleware, handlers.InitOrderHandler)
+	// details commandes
 	router.GET("/order/:orderId", middlewares.OrderAuth, handlers.GetOrderHandler)
+	// accepter commande (restaurant)
 	router.PATCH("/order/accept/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatePendingOrderHandler)
+	// commande prête (restaurant)
 	router.PATCH("/order/ready/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdateInProgressOrderHandler)
+	// commande terminée (restaurant)
 	router.PATCH("/order/complete/:orderId", middlewares.VerifyOrderMiddleware, handlers.UpdatCompletedOrderHandler)
+	// supprimer commande (????)
 	router.PATCH("/order/delete/:orderId", middlewares.OrderAuth, handlers.UpdatDeleteOrderHandler)
+	// récupérer les commandes d'un utilisateur (client)
 	router.GET("/order/pick/:orderId", middlewares.OrderClientAuth, handlers.PickOrder)
+	// vérifier le code de confirmation (restaurant)
 	router.POST("/order/pick/:orderId/:code", middlewares.VerifyOrderMiddleware, handlers.VerfyOrderCode)
 	router.GET("order/user/:userId", middlewares.AuthMiddleware, handlers.GetOrdersHandler)
 	router.GET("order/restaurant/:restaurantId", middlewares.AuthMiddleware, handlers.GetRestaurantOrdersHandler)

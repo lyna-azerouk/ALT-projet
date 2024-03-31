@@ -32,7 +32,7 @@ type BouffluenceRestaurant struct {
 type Menu struct {
 	Id           int            `json:"id"`
 	Name         string         `json:"name"`
-	Price        int            `json:"price"`
+	Price        float64        `json:"price"`
 	RestaurantID int            `json:"restaurent_id"`
 	Description  sql.NullString `json:"description"`
 	Image        sql.NullString `json:"url"`
