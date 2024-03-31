@@ -1,7 +1,5 @@
 package models
 
-import "database/sql"
-
 type Tags struct {
 	Amenity string `json:"amenity"`
 	Name    string `json:"name"`
@@ -30,12 +28,12 @@ type BouffluenceRestaurant struct {
 }
 
 type Menu struct {
-	Id           int            `json:"id"`
-	Name         string         `json:"name"`
-	Price        float64        `json:"price"`
-	RestaurantID int            `json:"restaurent_id"`
-	Description  sql.NullString `json:"description"`
-	Image        sql.NullString `json:"url"`
+	Id           int     `json:"id"`
+	Name         string  `json:"name"`
+	Price        float64 `json:"price"`
+	RestaurantID int     `json:"restaurent_id"`
+	Description  string  `json:"description"`
+	Image        string  `json:"url"`
 }
 
 type RestaurantDetails struct {
