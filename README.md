@@ -1,9 +1,9 @@
 # Projet TpAlt 
 #### Description: 
-Nous avons réalisé une application Android dédier aux étudiants. L'application  a pour bute de réduire le temps  passé à attendre pour commander et récupérer sa nourriture.
+Nous avons réalisé une application Android dédier aux étudiants et aux restaurateurs . L'application  a pour bute de réduire le temps  passé à attendre pour commander et récupérer sa nourriture.
 Notre application se concentre sur trois aspects principaux :
-- La réservation des commandes.
-- La gestion des commandes pour les restaurants
+- Réalisation d'une commande par un client.
+- La gestion des commandes par les restaurants
 - La consultation et le calcul de l’affluence.  
 
 Le serveur est réalisé en ```go``` avec le framework ```gin```, et il gère le Backoffice (restaurateur) et le client (étudiants). 
